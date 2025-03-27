@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'sqlite3'
 require 'colorize'
+require 'terminal-table'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
@@ -75,6 +76,15 @@ class Inventory < Sql
     rescue SQLite3::SQLException
     end
   end
+  def shipping_total(id)
+    table = get_options(id)
+    total_shipping = 0
+    @db.execute("select shipping from #{table};").each do |row|
+      row = row.shift
+      total_shipping += row
+    end
+    total_shipping
+  end
   def select_total_oz(id)
     table = get_options(id)
     total_oz = 0
@@ -88,10 +98,18 @@ class Inventory < Sql
 end
 module Silver
   @silver = Inventory.new
+  def self.print_table(rows)
+    t = Terminal::Table.new
+    t.rows  =  rows
+    t.style = {:all_separators => true}
+    t.style = {border: :unicode}
+    puts t.render
+  end
   def self.total_oz
     bar    = @silver.select_total_oz(1)
     junk   = @silver.select_total_oz(2)
-    puts "Bar OZ: #{bar}\n\nJunk OZ: #{junk}"
+    rows = [["Bar Total", bar], ["Junk Total", junk], ["Total", bar + junk]]
+    print_table(rows)
   end
   def self.select_bar
     @silver.select(1)
@@ -102,30 +120,57 @@ module Silver
   def self.price_avg
       bar  =  @silver.select_price_avg(1)
       junk = @silver.select_price_avg(2)
-      puts "Bar AVG: #{bar}"
-      puts "Junk AVG: #{junk}"
+      rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
+      print_table(rows)
+  end
+  
+  def self.display_all
+    bar_price_avg  = @silver.select_price_avg(1)
+    junk_price_avg = @silver.select_price_avg(2)
+    bar_total_oz   = @silver.select_total_oz(1)
+    junk_total_oz  = @silver.select_total_oz(2)
+    rows = [["Bar Price AVG", bar_price_avg], ["Junk Price AVG", junk_price_avg]]
+    print_table(rows)
+    print("\n\n")
+    rows = [["Junk OZ Total", junk_total_oz], ["Bar OZ Total", bar_total_oz], ["Total OZ", junk_total_oz + bar_total_oz]]
+    print_table(rows)
+    print("\n\n")
+    bar_shipping_total  = @silver.shipping_total(1)
+    junk_shipping_total = @silver.shipping_total(2)
+    total = bar_shipping_total + junk_shipping_total
+    rows = [["Bar Shipping Total", bar_shipping_total],
+            ["Junk Shipping", junk_shipping_total],
+            ["Shipping Total", total ]]
+    print_table(rows)
   end
 end
 #s = Silver.new
-#Silver.total_oz
+#Silver.total_oz-
 #puts s.select_total_oz(1)
-
-menu = "
-1) Select Junk
-2) Select Bar
-3) Select total OZ ( Bar & Junk )
-4) Price average
-"
-print(menu)
-print("Enter choice:")
-choice = gets.chomp
-case choice.to_i
-when 1
-  Silver.select_junk
-when 2
-  Silver.select_bar
-when 3
-  Silver.total_oz
-when 4
-  Silver.price_avg
+while true
+  menu = "
+  1) Select Junk
+  2) Select Bar
+  3) Select Total OZ ( Bar & Junk )
+  4) Price Average
+  5) Display All Information
+  \n"
+  print(menu)
+  print("Enter choice:")
+  choice = gets.chomp
+  print("\n\n\n")
+  case choice.to_i
+  when 1
+    Silver.select_junk
+  when 2
+    Silver.select_bar
+  when 3
+    Silver.total_oz
+  when 4
+    Silver.price_avg
+  when 5
+    Silver.display_all
+  when 9
+    exit
+  end
 end

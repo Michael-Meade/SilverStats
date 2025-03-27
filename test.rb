@@ -6,6 +6,7 @@ class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
   end
+  
 end
 
 class Bar < Sql
@@ -21,42 +22,7 @@ class Bar < Sql
     total / count
   end
 
-  def input
-    begin
-      @db.execute("create table IF NOT EXISTS Bar (id integer primary key autoincrement, bought_date text,
-				spot_price INTEGER,
-				amount INTEGER,
-				price real,
-				shipping real,
-				total real,
-				oz INTEGER,
-				name text,
-				status text,
-				sold_value INTEGER,
-				seller text,
-				method text);")
-    rescue SQLite3::SQLException
-    end
-    r = []
-    ['Bought Date',
-     'Spot Price',
-     'Amount',
-     'Price',
-     'Shipping',
-     'Total',
-     'OZ',
-     'Name',
-     'Status',
-     'Sold Value',
-     'Seller',
-     'Method'].each do |t|
-      print("Enter #{t}:")
-      input = gets.chomp
-      r << input
-    end
-    @db.execute 'insert into Bar values (?,?,?,?,?,?,?,?,?,?,?,?,?)', nil, r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7],
-                r[8], r[9], r[10], r[11]
-  end
+  
 
   def avg_price
     count = 0
@@ -108,18 +74,7 @@ end
 class JunkSilver < Sql
   def input
     begin
-      @db.execute("create table IF NOT EXISTS Junk (id integer primary key autoincrement, bought_date text,
-				spot_price INTEGER,
-				amount INTEGER,
-				price real,
-				shipping real,
-				total real,
-				oz INTEGER,
-				name text,
-				status text,
-				sold_value INTEGER,
-				seller text,
-				method text);")
+      
     rescue SQLite3::SQLException
     end
     r = []
@@ -303,12 +258,8 @@ module Silver
     puts "AVERAGE: #{bar.avg_price}\n"
   end
 
-  def self.test
-    bar = Bar.new
-    puts bar.test_price
-  end
 end
 # Silver.avg_price
 # Silver.total_oz
 # Silver.shipping_total
-Silver.test
+
