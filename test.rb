@@ -9,6 +9,18 @@ class Sql
 end
 
 class Bar < Sql
+  def test_price
+    count = 0
+    total = 0
+    table = get_option(2)
+    @db.execute("select price from #{table};").each do |row|
+      row = row.shift
+      total += row
+      count += 1
+    end
+    total / count
+  end
+
   def input
     begin
       @db.execute("create table IF NOT EXISTS Bar (id integer primary key autoincrement, bought_date text,
@@ -58,6 +70,7 @@ class Bar < Sql
   end
 
   def select_bar
+  begin
     @db.execute('select * from Bar;').each do |i|
       puts i.join(' | ')
     end
@@ -282,14 +295,20 @@ module Silver
     bar_oz  = bar.select_total_oz
     total_oz += junk_oz + bar_oz
     puts "Junk oz:#{junk_oz}\nBar oz:#{bar_oz}\n\n"
-    puts "Total OZ:#{total_oz}"
+    puts "Total OZ:#{total_oz}\n"
   end
 
   def self.avg_price
     bar = Bar.new
     puts "AVERAGE: #{bar.avg_price}\n"
   end
+
+  def self.test
+    bar = Bar.new
+    puts bar.test_price
+  end
 end
 # Silver.avg_price
 # Silver.total_oz
-Silver.shipping_total
+# Silver.shipping_total
+Silver.test
