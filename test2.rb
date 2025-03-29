@@ -2,6 +2,7 @@
 require 'sqlite3'
 require 'colorize'
 require 'terminal-table'
+require 'json'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
@@ -94,16 +95,42 @@ class Inventory < Sql
     end
     total_oz
   end
-
+  def sold_own
+    bar_own   = @db.execute("select status from Bar where status = 'own';").count
+    junk_own  = @db.execute("select status from Junk where status = 'own';").count
+    bar_sold  = @db.execute("select status from Bar where status = 'sold';").count
+    junk_sold = @db.execute("select status from Junk where status = 'sold';").count
+  return bar_own, junk_own, bar_sold, junk_sold
+  end
+  def select_franklins
+    @db.execute("select name from Junk where name like '%franklin%';")
+  end
+  def select_method(id)
+    table = get_options(id)
+    meth = {}
+    @db.execute("select method from #{table};").each do |row|
+      if !meth.has_key?(row[0])
+        name = row[0]
+        meth[name] = 1
+      else
+        meth[row[0]] += 1
+      end
+    end
+    methods_array = []
+    meth.each do |k,v|
+      methods_array << [k,v]
+    end
+  methods_array
+  end 
 end
 module Silver
   @silver = Inventory.new
-  def self.print_table(rows)
-    t = Terminal::Table.new
+  def self.print_table(rows, headers=nil, title=nil)
+    t = Terminal::Table.new :headings => headers, :title => title
     t.rows  =  rows
     t.style = {:all_separators => true}
     t.style = {border: :unicode}
-    puts t.render
+    puts t.render.green
   end
   def self.total_oz
     bar    = @silver.select_total_oz(1)
@@ -123,7 +150,26 @@ module Silver
       rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
       print_table(rows)
   end
-  
+  def self.franklins
+    count = @silver.select_franklins.count
+    rows  = [["Franklin Half Count", count]]
+    print_table(rows).green
+  end
+  def self.test
+    bar  =  @silver.select_price_avg(1)
+    junk = @silver.select_price_avg(2)
+    count = @silver.select_franklins.count
+    rows  = [["Franklin Half Count", count]]
+    rows2 = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
+    t = rows << [[rows2]]
+    print_table(t)
+  end
+  def self.method_of_purchase
+    rows = @silver.select_method(1)
+    print_table(rows, ["Site", "Count"], "Bar Silver")
+    rows = @silver.select_method(2)
+    print_table(rows, ["Site", "Count"], "Junk Silver")
+  end
   def self.display_all
     bar_price_avg  = @silver.select_price_avg(1)
     junk_price_avg = @silver.select_price_avg(2)
@@ -132,7 +178,9 @@ module Silver
     rows = [["Bar Price AVG", bar_price_avg], ["Junk Price AVG", junk_price_avg]]
     print_table(rows)
     print("\n\n")
-    rows = [["Junk OZ Total", junk_total_oz], ["Bar OZ Total", bar_total_oz], ["Total OZ", junk_total_oz + bar_total_oz]]
+    rows = [["Junk OZ Total", junk_total_oz],
+            ["Bar OZ Total", bar_total_oz],
+            ["Total OZ", junk_total_oz + bar_total_oz]]
     print_table(rows)
     print("\n\n")
     bar_shipping_total  = @silver.shipping_total(1)
@@ -142,20 +190,62 @@ module Silver
             ["Junk Shipping", junk_shipping_total],
             ["Shipping Total", total ]]
     print_table(rows)
+    print("\n\n")
+    results = @silver.sold_own
+    rows = [["Bar Own Count", results[0]],
+            ["Junk Own Count", results[1]],
+            ["Bar Sold Count", results[2]],
+            ["Junk Sold Count", results[3]]]
+    print_table(rows)
+    print("\n\n")
+    rows = @silver.select_method(1)
+    print_table(rows, ["Site", "Count"], "Bar Silver")
+    rows = @silver.select_method(2)
+    print_table(rows, ["Site", "Count"], "Junk Silver")
+  end
+  def self.sold_vs_own
+    results = @silver.sold_own
+    rows = [["Bar Own Count", results[0]],
+            ["Junk Own Count", results[1]],
+            ["Bar Sold Count", results[2]],
+            ["Junk Sold Count", results[3]]]
+    print_table(rows)
+  end
+  def self.menu
+    rows = [[1, "Select Junk"],
+    [2, "Select Bar"],
+    [3, "Select All Total OZ"],
+    [4, "Price AVG"],
+    [5, "Display All Info"],
+    [6, "Sold & Own Info"],
+    [7, "Enter New Bars"],
+    [8, "Find Franklins"],
+    [9, "Select Method of Purchase"],
+    [10, "Quit"]]
+    print_table(rows)
   end
 end
 #s = Silver.new
 #Silver.total_oz-
 #puts s.select_total_oz(1)
 while true
+=begin
   menu = "
   1) Select Junk
   2) Select Bar
   3) Select Total OZ ( Bar & Junk )
   4) Price Average
   5) Display All Information
+  6) Sold and Own Data
+  7) Enter New Bars
+  8) Find Franklins
+  9) Select Method of purchase
+  10) Test
+  10) Quit
   \n"
-  print(menu)
+=end
+  print("\n\n\n\n")
+  Silver.menu
   print("Enter choice:")
   choice = gets.chomp
   print("\n\n\n")
@@ -170,7 +260,16 @@ while true
     Silver.price_avg
   when 5
     Silver.display_all
+  when 6
+    Silver.sold_vs_own
+  when 7
+  when 8
+    Silver.franklins
   when 9
+    Silver.method_of_purchase
+  when 10
+    Silver.test
+  when 11
     exit
   end
 end
