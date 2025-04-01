@@ -121,7 +121,26 @@ class Inventory < Sql
       methods_array << [k,v]
     end
   methods_array
-  end 
+  end
+  def update_own(row_id, id)
+    table = get_options(id)
+    @db.execute("select #{table} from Junk where id = '#{row_id}';").each do |row|
+      row = row.shift
+      if row.eql?('own')
+        @db.execute("UPDATE #{table} SET status = 'sold' WHERE id='#{row_id}';")
+      else
+        @db.execute("UPDATE #{table} SET status = 'own' WHERE id='#{row_id}';")
+      end
+      next unless row.eql?('own')
+
+      print('Enter amount sold for: ')
+      sold_price = gets.chomp
+      if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/)
+        @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
+      end
+      print("\n\n\n")
+    end
+  end
 end
 module Silver
   @silver = Inventory.new
@@ -135,7 +154,7 @@ module Silver
   def self.total_oz
     bar    = @silver.select_total_oz(1)
     junk   = @silver.select_total_oz(2)
-    rows = [["Bar Total", bar], ["Junk Total", junk], ["Total", bar + junk]]
+    rows = [["Bar Total OZ", bar], ["Junk Total OZ", junk], ["Total OZ", bar + junk]]
     print_table(rows)
   end
   def self.select_bar
@@ -145,24 +164,15 @@ module Silver
     @silver.select(2)
   end
   def self.price_avg
-      bar  =  @silver.select_price_avg(1)
-      junk = @silver.select_price_avg(2)
-      rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
-      print_table(rows)
+    bar  =  @silver.select_price_avg(1)
+    junk = @silver.select_price_avg(2)
+    rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
+    print_table(rows)
   end
   def self.franklins
     count = @silver.select_franklins.count
     rows  = [["Franklin Half Count", count]]
-    print_table(rows).green
-  end
-  def self.test
-    bar  =  @silver.select_price_avg(1)
-    junk = @silver.select_price_avg(2)
-    count = @silver.select_franklins.count
-    rows  = [["Franklin Half Count", count]]
-    rows2 = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
-    t = rows << [[rows2]]
-    print_table(t)
+    print_table(rows)
   end
   def self.method_of_purchase
     rows = @silver.select_method(1)
@@ -211,6 +221,15 @@ module Silver
             ["Junk Sold Count", results[3]]]
     print_table(rows)
   end
+  def self.enter_bar
+    @silver.input(1)
+  end
+  def self.enter_junk
+    @silver.input(2)
+  end
+  def change_own_status(row_id, id)
+    @silver.update_own(row_id, id)
+  end
   def self.menu
     rows = [[1, "Select Junk"],
     [2, "Select Bar"],
@@ -221,29 +240,14 @@ module Silver
     [7, "Enter New Bars"],
     [8, "Find Franklins"],
     [9, "Select Method of Purchase"],
-    [10, "Quit"]]
+    [10, "Enter New Junk"],
+    [11, "Update Bar Own Status"],
+    [12, "Update Junk Own Status"],
+    [13, "Quit"]]
     print_table(rows)
   end
 end
-#s = Silver.new
-#Silver.total_oz-
-#puts s.select_total_oz(1)
 while true
-=begin
-  menu = "
-  1) Select Junk
-  2) Select Bar
-  3) Select Total OZ ( Bar & Junk )
-  4) Price Average
-  5) Display All Information
-  6) Sold and Own Data
-  7) Enter New Bars
-  8) Find Franklins
-  9) Select Method of purchase
-  10) Test
-  10) Quit
-  \n"
-=end
   print("\n\n\n\n")
   Silver.menu
   print("Enter choice:")
@@ -252,24 +256,42 @@ while true
   case choice.to_i
   when 1
     Silver.select_junk
+    sleep 10
   when 2
     Silver.select_bar
+    sleep 10
   when 3
     Silver.total_oz
+    sleep 10
   when 4
     Silver.price_avg
+    sleep 10
   when 5
     Silver.display_all
+    sleep 10
   when 6
     Silver.sold_vs_own
+    sleep 10
   when 7
+    Silver.enter_bar
   when 8
     Silver.franklins
+    sleep 10
   when 9
     Silver.method_of_purchase
+    sleep 10
   when 10
-    Silver.test
-  when 11
+    Silver.enter_junk
+    sleep 10
+  when 12
+    print("Enter Row ID")
+    row_id = gets.chomp
+    Silver.update_own(row_id, 1)
+  when 14
+    print("Enter Row ID")
+    row_id = get.chomp
+    Silver.update_own(row_id, 2)
+  when 13
     exit
   end
 end
