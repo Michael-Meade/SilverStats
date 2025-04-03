@@ -64,15 +64,19 @@ class Inventory < Sql
                 r[8], r[9], r[10], r[11]
   end
   def select_price_avg(id)
-    count = 0
-    total = 0
-    table = get_options(id)
-    @db.execute("select price from #{table};").each do |row|
-      row = row.shift
-      total += row
-      count += 1
+    begin
+      count = 0
+      total = 0
+      table = get_options(id)
+      @db.execute("select price from #{table};").each do |row|
+        row = row.shift
+        total += row
+        count += 1
+      end
+      total / count
+    rescue => e
+      puts "ERROR: #{e}".red
     end
-    total / count
   end
   def select(id)
     table = get_options(id)
