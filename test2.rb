@@ -6,7 +6,10 @@ require 'json'
 require 'httparty'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test2.db'
+    @db = SQLite3::Database.new 'test_db.db'
+
+    #'test2.db'
+    #'test_db.db'
     begin
       ["Bar", "Junk", "Bullion"].each do |table|
         @db.execute("create table IF NOT EXISTS #{table} (id integer primary key autoincrement, bought_date text,
@@ -129,14 +132,14 @@ class Inventory < Sql
   end
   def update_own(row_id, id)
     table = get_options(id)
-    @db.execute("select #{table} from Junk where id = '#{row_id}';").each do |row|
+    @db.execute("select status from #{table} where id = '#{row_id}';").each do |row|
       row = row.shift
       if row.eql?('own')
         @db.execute("UPDATE #{table} SET status = 'sold' WHERE id='#{row_id}';")
       else
         @db.execute("UPDATE #{table} SET status = 'own' WHERE id='#{row_id}';")
       end
-      next unless row.eql?('own')
+      #next unless row.eql?('own')
 
       print('Enter amount sold for: ')
       sold_price = gets.chomp
@@ -331,13 +334,13 @@ while true
     Silver.enter_junk
     sleep 10
   when 11
-    print("Enter Row ID")
+    print("Enter Row ID:")
     row_id = gets.chomp
-    Silver.update_own(row_id, 1)
+    Silver.change_own_status(row_id, 1)
   when 12
-    print("Enter Row ID")
-    row_id = get.chomp
-    Silver.update_own(row_id, 2)
+    print("Enter Row ID:")
+    row_id = gets.chomp
+    Silver.change_own_status(row_id, 2)
   when 13
     # Enter Bullion
     Silver.enter_bullion
@@ -350,7 +353,7 @@ while true
     # Update Own Bullion
     print("Enter Row ID: ")
     row_id = gets.chomp
-    Silver.update_own(row_id, 3)
+    Silver.change_own_status(row_id, 3)
   when 16
     exit
   end
