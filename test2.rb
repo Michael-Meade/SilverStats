@@ -3,11 +3,12 @@ require 'sqlite3'
 require 'colorize'
 require 'terminal-table'
 require 'json'
+require 'httparty'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
     begin
-      ["Bar", "Junk"].each do |table|
+      ["Bar", "Junk", "Bullion"].each do |table|
         @db.execute("create table IF NOT EXISTS #{table} (id integer primary key autoincrement, bought_date text,
             spot_price INTEGER,
             amount INTEGER,
@@ -33,6 +34,8 @@ class Inventory < Sql
       "Bar"
     when 2
       "Junk"
+    when 3
+      "Bullion"
     end
   end
   def input(id)
@@ -144,6 +147,12 @@ class Inventory < Sql
 end
 module Silver
   @silver = Inventory.new
+  def self.get_silver_price(amount)
+    r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd")
+    r_clean  = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
+    json = JSON.parse(r_clean)["to"].shift
+    return json["mid"]
+  end
   def self.print_table(rows, headers=nil, title=nil)
     t = Terminal::Table.new :headings => headers, :title => title
     t.rows  =  rows
@@ -152,9 +161,15 @@ module Silver
     puts t.render.green
   end
   def self.total_oz
-    bar    = @silver.select_total_oz(1)
-    junk   = @silver.select_total_oz(2)
-    rows = [["Bar Total OZ", bar], ["Junk Total OZ", junk], ["Total OZ", bar + junk]]
+    bar     = @silver.select_total_oz(1)
+    junk    = @silver.select_total_oz(2)
+    bullion = @silver.select_total_oz(3) 
+    bar_amount     = get_silver_price(bar)
+    junk_amount    = get_silver_price(junk)
+    bullion_amount = get_silver_price(bullion) 
+    total          = bar + junk + bullion
+    amount_all     = bar_amount + junk_amount + bullion_amount
+    rows = [["Bar Total OZ", bar, "$#{bar_amount}"], ["Junk Total OZ", junk, "$#{junk_amount}"], ["Bullion Total OZ", bullion, "$#{bullion_amount}"], ["Total OZ", total, "$#{amount_all}" ]]
     print_table(rows)
   end
   def self.select_bar
@@ -163,10 +178,14 @@ module Silver
   def self.select_junk
     @silver.select(2)
   end
+  def self.select_bullion
+    @silver.select(3)
+  end
   def self.price_avg
-    bar  =  @silver.select_price_avg(1)
-    junk = @silver.select_price_avg(2)
-    rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk]]
+    bar     = @silver.select_price_avg(1)
+    junk    = @silver.select_price_avg(2)
+    bullion = @silver.select_price_avg(3)
+    rows = [["Bar Price AVG", bar], ["Junk Price AVG", junk], ["Bullion Price AVG", bullion]]
     print_table(rows)
   end
   def self.franklins
@@ -179,25 +198,38 @@ module Silver
     print_table(rows, ["Site", "Count"], "Bar Silver")
     rows = @silver.select_method(2)
     print_table(rows, ["Site", "Count"], "Junk Silver")
+    rows = @silver.select_method(3)
+    print_table(rows, ["Site", "Count"], "Bullion Silver")
   end
   def self.display_all
-    bar_price_avg  = @silver.select_price_avg(1)
-    junk_price_avg = @silver.select_price_avg(2)
-    bar_total_oz   = @silver.select_total_oz(1)
-    junk_total_oz  = @silver.select_total_oz(2)
-    rows = [["Bar Price AVG", bar_price_avg], ["Junk Price AVG", junk_price_avg]]
+    bar_price_avg     = @silver.select_price_avg(1)
+    junk_price_avg    = @silver.select_price_avg(2)
+    bullion_price_avg = @silver.select_price_avg(3) 
+    rows = [["Bar Price AVG", bar_price_avg],
+            ["Junk Price AVG", junk_price_avg],
+            ["Bullion Price AVG", bullion_price_avg]]
     print_table(rows)
     print("\n\n")
-    rows = [["Junk OZ Total", junk_total_oz],
-            ["Bar OZ Total", bar_total_oz],
-            ["Total OZ", junk_total_oz + bar_total_oz]]
+    bar_total_oz     = @silver.select_total_oz(1)
+    junk_total_oz    = @silver.select_total_oz(2)
+    bullion_total_oz = @silver.select_total_oz(3)
+    bar_amt          = get_silver_price(bar_total_oz) 
+    junk_amt         = get_silver_price(junk_total_oz)
+    bullion_amt      = get_silver_price(bullion_total_oz)
+    total_oz         = junk_total_oz + bar_total_oz + bullion_total_oz
+    rows = [["Junk OZ Total", junk_total_oz, "$#{junk_amt}"],
+            ["Bar OZ Total", bar_total_oz, "$#{bar_amt}"],
+            ["Bullion OZ Total", bullion_total_oz, "$#{bullion_amt}"],
+            ["Total OZ", "$#{total_oz}", "#{get_silver_price(total_oz)}"]]
     print_table(rows)
     print("\n\n")
-    bar_shipping_total  = @silver.shipping_total(1)
-    junk_shipping_total = @silver.shipping_total(2)
-    total = bar_shipping_total + junk_shipping_total
+    bar_shipping_total     = @silver.shipping_total(1)
+    junk_shipping_total    = @silver.shipping_total(2)
+    bullion_shipping_total = @silver.shipping_total(3)
+    total = bar_shipping_total + junk_shipping_total + bullion_shipping_total
     rows = [["Bar Shipping Total", bar_shipping_total],
-            ["Junk Shipping", junk_shipping_total],
+            ["Junk Shipping Total", junk_shipping_total],
+            ["Bullion Shipping Total", bullion_shipping_total],
             ["Shipping Total", total ]]
     print_table(rows)
     print("\n\n")
@@ -212,6 +244,8 @@ module Silver
     print_table(rows, ["Site", "Count"], "Bar Silver")
     rows = @silver.select_method(2)
     print_table(rows, ["Site", "Count"], "Junk Silver")
+    rows = @silver.select_method(3)
+    print_table(rows, ["Site", "Count"], "Bullion Silver")
   end
   def self.sold_vs_own
     results = @silver.sold_own
@@ -227,8 +261,11 @@ module Silver
   def self.enter_junk
     @silver.input(2)
   end
-  def change_own_status(row_id, id)
+  def self.change_own_status(row_id, id)
     @silver.update_own(row_id, id)
+  end
+  def self.enter_bullion
+    @silver.input(3)
   end
   def self.menu
     rows = [[1, "Select Junk"],
@@ -243,7 +280,10 @@ module Silver
     [10, "Enter New Junk"],
     [11, "Update Bar Own Status"],
     [12, "Update Junk Own Status"],
-    [13, "Quit"]]
+    [13, "Enter New Bullion"],
+    [14, "Select Bullion"],
+    [15, "Update Bullion Own"],
+    [16, "Quit"]]
     print_table(rows)
   end
 end
@@ -283,15 +323,30 @@ while true
   when 10
     Silver.enter_junk
     sleep 10
-  when 12
+  when 11
     print("Enter Row ID")
     row_id = gets.chomp
     Silver.update_own(row_id, 1)
-  when 14
+  when 12
     print("Enter Row ID")
     row_id = get.chomp
     Silver.update_own(row_id, 2)
   when 13
+    # Enter Bullion
+    Silver.enter_bullion
+    sleep 10
+  when 14
+    # Select Bullion
+    Silver.select_bullion
+    sleep 10
+  when 15
+    # Update Own Bullion
+    print("Enter Row ID: ")
+    row_id = gets.chomp
+    Silver.update_own(row_id, 3)
+  when 16
     exit
+  when 18
+    Silver.get_silver_price(10)
   end
 end
