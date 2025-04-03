@@ -99,11 +99,13 @@ class Inventory < Sql
     total_oz
   end
   def sold_own
-    bar_own   = @db.execute("select status from Bar where status = 'own';").count
-    junk_own  = @db.execute("select status from Junk where status = 'own';").count
-    bar_sold  = @db.execute("select status from Bar where status = 'sold';").count
-    junk_sold = @db.execute("select status from Junk where status = 'sold';").count
-  return bar_own, junk_own, bar_sold, junk_sold
+    bar_own       = @db.execute("select status from Bar where status = 'own';").count
+    junk_own      = @db.execute("select status from Junk where status = 'own';").count
+    bar_sold      = @db.execute("select status from Bar where status = 'sold';").count
+    junk_sold     = @db.execute("select status from Junk where status = 'sold';").count
+    bullion_own   = @db.execute("select status from Bullion where status = 'own';").count
+    bullion_sold  = @db.execute("select status from Bullion where status = 'sold';").count
+  return bar_own, junk_own, bar_sold, junk_sold, bullion_own, bullion_sold
   end
   def select_franklins
     @db.execute("select name from Junk where name like '%franklin%';")
@@ -234,10 +236,13 @@ module Silver
     print_table(rows)
     print("\n\n")
     results = @silver.sold_own
+    #bar_own, junk_own, bar_sold, junk_sold, bullion_own, bullion_sold
     rows = [["Bar Own Count", results[0]],
             ["Junk Own Count", results[1]],
             ["Bar Sold Count", results[2]],
-            ["Junk Sold Count", results[3]]]
+            ["Junk Sold Count", results[3]],
+            ["Bullion Own Count", results[4]],
+            ["Bullion Sold Count", results[5]]]
     print_table(rows)
     print("\n\n")
     rows = @silver.select_method(1)
@@ -252,7 +257,9 @@ module Silver
     rows = [["Bar Own Count", results[0]],
             ["Junk Own Count", results[1]],
             ["Bar Sold Count", results[2]],
-            ["Junk Sold Count", results[3]]]
+            ["Junk Sold Count", results[3]],
+            ["Bullion Own Count", results[4]],
+            ["Bullion Sold Count", results[5]]]
     print_table(rows)
   end
   def self.enter_bar
@@ -346,7 +353,5 @@ while true
     Silver.update_own(row_id, 3)
   when 16
     exit
-  when 18
-    Silver.get_silver_price(10)
   end
 end
