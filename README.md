@@ -1,5 +1,7 @@
 # SilverStats
 
+Note that the database included and shown is not my real stack information. I do not want to show
+that inforamtion because it's bad op sec.
 ## Menu 
 This takes a number. Right now it is 1 through 18..
 ![menu of the program](images/menu.png)

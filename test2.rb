@@ -56,9 +56,22 @@ class Inventory < Sql
      'Sold Value',
      'Seller',
      'Method'].each do |t|
-      print("Enter #{t}:")
-      input = gets.chomp
-      r << input
+      if t.to_s.eql?("Status")
+        menu = "1) Own\n2) Sold\n"
+        print(menu)
+        print("Enter #{t}:")
+        input = gets.chomp
+        case input.to_i
+        when 1
+          r << "own"
+        when 2
+          r << "sold"
+        end
+      else
+        print("Enter #{t}:")
+        input = gets.chomp
+        r << input
+      end
     end
     @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", nil, r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7],
                 r[8], r[9], r[10], r[11]
