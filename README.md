@@ -15,3 +15,11 @@ duckduck go search to display how much the silver total is in USD.
 The image below shows that it will show text in red if there is a error with 
 determining the avg. 
 ![Price AVG](images/price_avg.png)
+
+## Sold Total
+Get the total of all Sold items.
+![Sold Total](images/sold_total.png)
+
+## Update Sold Value
+Update the sold value. This is used when you sell one of your piece of silver.
+![Sold Value](images/update_sold.png)

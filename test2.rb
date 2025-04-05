@@ -200,6 +200,15 @@ class Inventory < Sql
       print("\n\n\n")
     end
   end
+  def sold_total(id)
+    table = get_options(id)
+    total = 0
+    @db.execute("select sold_value from #{table}").each do |sold|
+      sold = sold.shift
+      total += sold.to_i
+    end
+  total
+  end
 end
 module Silver
   @silver = Inventory.new
@@ -225,7 +234,10 @@ module Silver
     bullion_amount = get_silver_price(bullion) 
     total          = bar + junk + bullion
     amount_all     = bar_amount + junk_amount + bullion_amount
-    rows = [["Bar Total OZ", bar, "$#{bar_amount}"], ["Junk Total OZ", junk, "$#{junk_amount}"], ["Bullion Total OZ", bullion, "$#{bullion_amount}"], ["Total OZ", total, "$#{amount_all}" ]]
+    rows = [["Bar Total OZ", bar, "$#{bar_amount}"],
+     ["Junk Total OZ", junk, "$#{junk_amount}"],
+     ["Bullion Total OZ", bullion, "$#{bullion_amount}"],
+     ["Total OZ", total, "$#{amount_all}" ]]
     print_table(rows)
   end
   def self.select_bar
@@ -328,6 +340,17 @@ module Silver
   def self.enter_bullion
     @silver.input(3)
   end
+  def self.select_sold_total
+    bar_total     = @silver.sold_total(1)
+    junk_total    = @silver.sold_total(2)
+    bullion_total = @silver.sold_total(3)
+    combine_total = bar_total + junk_total + bullion_total
+    rows = [["Bar Sold Total",     bar_total],
+            ["Junk Sold Total",    junk_total],
+            ["Bullion Sold Total", bullion_total],
+            ["Total of All Sold",  combine_total]]
+  print_table(rows)
+  end
   def self.menu
     rows = [[1, "Select Junk"],
     [2, "Select Bar"],
@@ -344,7 +367,8 @@ module Silver
     [13, "Enter New Bullion"],
     [14, "Select Bullion"],
     [15, "Update Bullion Own"],
-    [16, "Quit"]]
+    [16, "Sold total"],
+    [17, "Quit"]]
     print_table(rows)
   end
 end
@@ -406,6 +430,8 @@ while true
     row_id = gets.chomp
     Silver.change_own_status(row_id, 3)
   when 16
+    Silver.select_sold_total
+  when 17
     exit
   end
 end
