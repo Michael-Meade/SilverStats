@@ -7,6 +7,7 @@ require 'httparty'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test_db.db'
+    #'test_db.db'
 
     #'test2.db'
     #'test_db.db'
@@ -66,6 +67,39 @@ class Inventory < Sql
           r << "own"
         when 2
           r << "sold"
+        end
+      elsif t.to_s.eql?("Bought Date")
+        action = true
+        while action == true
+          print("Enter date: ")
+          date = gets.chomp
+          if date.match?(/\A\d{2}\/\d{2}\/\d{4}\Z/)
+            r << date
+            action = false
+          end
+        end
+      elsif t.to_s.eql?("Method")
+        method_menu = "
+          1) Reddit
+          2) JMbullion
+          3) APMEX
+          4) Gift
+          5) Unknown
+        "
+        print(method_menu)
+        print("Enter Method: ")
+        method_input = gets.chomp
+        case method_input.to_i
+        when 1
+          r << "Reddit"
+        when 2
+          r << "JMbullion"
+        when 3
+          r << "APMEX"
+        when 4
+          r << "Gift"
+        when 5
+          r << "Unknown"
         end
       else
         print("Enter #{t}:")
