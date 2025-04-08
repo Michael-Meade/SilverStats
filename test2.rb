@@ -11,6 +11,11 @@ class Sql
     #'test_db.db'
     #'test_db.db'
     begin
+      @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text);")
+    rescue => e
+      puts "ERROR: #{e}".red
+    end
+    begin
       ["Bar", "Junk", "Bullion"].each do |table|
         @db.execute("create table IF NOT EXISTS #{table} (id integer primary key autoincrement, bought_date text,
             spot_price INTEGER,
@@ -39,6 +44,8 @@ class Inventory < Sql
       "Junk"
     when 3
       "Bullion"
+    when 4
+      "Cash"
     end
   end
   def input(id)
@@ -144,6 +151,13 @@ class Inventory < Sql
     end
     @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", nil, r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7],
                 r[8], r[9], r[10], r[11]
+  end
+  def input_cash
+    print("Enter amount of Cash: ")
+    cash_amount = gets.chomp
+    print("Enter from who: ")
+    from = gets.chomp
+    @db.execute "insert into Cash values (?, ?, ?)", nil, cash_amount, from
   end
   def select_price_avg(id)
     begin
@@ -313,6 +327,9 @@ module Silver
   def self.select_bullion
     @silver.select(3) # Bullion
   end
+  def self.select_cash
+    @silver.select(4)
+  end
   def self.price_avg
     bar     = @silver.select_price_avg(1) # Bar
     junk    = @silver.select_price_avg(2) # Junk
@@ -433,6 +450,9 @@ module Silver
     # id is the table id ( Bars, Junk, Bullion)
     @silver.delete_row(row_id, id)
   end
+  def self.cash_input
+    @silver.input_cash
+  end
   def self.menu
     rows = [[1, "Select Junk"],
     [2, "Select Bar"],
@@ -453,7 +473,9 @@ module Silver
     [17, "Select Total OZ Sold"],
     [18, "Copy Database file"],
     [19, "Delete Row"],
-    [20, "Quit"]]
+    [20, "Enter Cash"],
+    [21, "Select Cash"],
+    [22, "Quit"]]
     print_table(rows)
   end
 end
@@ -563,6 +585,12 @@ while true
 
     sleep 10
   when 20
+    Silver.cash_input
+    sleep 30
+  when 21
+    Silver.select_cash
+    sleep 30
+  when 22
     exit
   end
 end
