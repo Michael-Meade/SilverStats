@@ -6,12 +6,13 @@ require 'json'
 require 'httparty'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test_db.db'
+    @db = SQLite3::Database.new 'test2.db'
+    #'test_db.db'
     #'test2.db'
     #'test_db.db'
     #'test_db.db'
     begin
-      @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text);")
+      @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);")
     rescue => e
       puts "ERROR: #{e}".red
     end
@@ -157,7 +158,7 @@ class Inventory < Sql
     cash_amount = gets.chomp
     print("Enter from who: ")
     from = gets.chomp
-    @db.execute "insert into Cash values (?, ?, ?)", nil, cash_amount, from
+    @db.execute "insert into Cash values (?, ?, ?, ?, ?)", nil, cash_amount, from, "own", 0
   end
   def select_price_avg(id)
     begin
@@ -248,14 +249,29 @@ class Inventory < Sql
         @db.execute("UPDATE #{table} SET status = 'own' WHERE id='#{row_id}';")
       end
       #next unless row.eql?('own')
-
-      print('Enter amount sold for: ')
-      sold_price = gets.chomp
-      # make sure input is a number. 
-      if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/) 
-        @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
+      if id.to_i <= 3
+        print('Enter amount sold for: ')
+        sold_price = gets.chomp
+        # make sure input is a number. 
+        if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/) 
+          @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
+        end
+        print("\n\n\n")
       end
-      print("\n\n\n")
+    end
+  end
+  def update_cash_own(row_id)
+    @db.execute("select status from Cash where id = '#{row_id}';").each do |row|
+      row = row.shift
+      if row.eql?('own')
+        @db.execute("UPDATE Cash SET status = 'spent' WHERE id='#{row_id}';")
+      else
+        @db.execute("UPDATE Cash SET status = 'own' WHERE id='#{row_id}';")
+      end
+      print("Enter Spent Amount: ")
+      spent_amount = gets.chomp
+      @db.execute("UPDATE Cash SET spent_amount = '#{spent_amount}' WHERE id='#{row_id}';")
+
     end
   end
   def sold_total(id)
@@ -315,7 +331,7 @@ module Silver
     rows = [["Bar Total OZ", bar,     "$#{bar_amount}"],
      ["Junk Total OZ",       junk,    "$#{junk_amount}"],
      ["Bullion Total OZ",    bullion, "$#{bullion_amount}"],
-     ["Total OZ",            total,   "$#{amount_all}" ]]
+     ["Total OZ",            total,   "#{amount_all}" ]]
     print_table(rows)
   end
   def self.select_bar
@@ -328,7 +344,7 @@ module Silver
     @silver.select(3) # Bullion
   end
   def self.select_cash
-    @silver.select(4)
+    @silver.select(4) # Cash
   end
   def self.price_avg
     bar     = @silver.select_price_avg(1) # Bar
@@ -338,11 +354,14 @@ module Silver
     print_table(rows)
   end
   def self.franklins
+    # gets the count of franklin half dollars
     count = @silver.select_franklins.count
     rows  = [["Franklin Half Count", count]]
     print_table(rows)
   end
   def self.method_of_purchase
+    # creates a table of all the methods of purchases. For example
+    # one method is that of Reddit.
     rows = @silver.select_method(1) # Bar
     print_table(rows, ["Site", "Count"], "Bar Silver")
     rows = @silver.select_method(2) # Junk
@@ -351,6 +370,7 @@ module Silver
     print_table(rows, ["Site", "Count"], "Bullion Silver")
   end
   def self.display_all
+    # This method will display all the data in nice little tables.
     bar_price_avg     = @silver.select_price_avg(1) # Bar
     junk_price_avg    = @silver.select_price_avg(2) # Junk
     bullion_price_avg = @silver.select_price_avg(3) # Bullion
@@ -369,9 +389,10 @@ module Silver
     rows = [["Junk OZ Total", junk_total_oz, "$#{junk_amt}"],
             ["Bar OZ Total", bar_total_oz, "$#{bar_amt}"],
             ["Bullion OZ Total", bullion_total_oz, "$#{bullion_amt}"],
-            ["Total OZ", "$#{total_oz}", "#{get_silver_price(total_oz)}"]]
+            ["Total OZ", "#{total_oz}", "$#{get_silver_price(total_oz)}"]]
     print_table(rows)
     print("\n\n")
+    # Create a unicode table to show all the shipping total.
     bar_shipping_total     = @silver.shipping_total(1) # Bar
     junk_shipping_total    = @silver.shipping_total(2) # Junk
     bullion_shipping_total = @silver.shipping_total(3) # Bullion
@@ -424,6 +445,7 @@ module Silver
     @silver.input(3) # Enter new Bullion
   end
   def self.select_sold_total
+    # Displays the sold total data in a nice table. 
     bar_total     = @silver.sold_total(1) # 1: Bar
     junk_total    = @silver.sold_total(2) # 2: Junk
     bullion_total = @silver.sold_total(3) # 3: Bullion
@@ -435,6 +457,8 @@ module Silver
   print_table(rows)
   end
   def self.select_sold_oz_total
+    # displays the total oz that was sold in
+    # a nice table
     bar_total     = @silver.sold_total(1) # 1: Bar
     junk_total    = @silver.sold_total(2) # 2: Junk
     bullion_total = @silver.sold_total(3) # 3: Bullion
@@ -447,11 +471,16 @@ module Silver
   end
   def self.delete_row_by_id(row_id, id)
     # row_id is the id of row
-    # id is the table id ( Bars, Junk, Bullion)
+    # id is the table id ( Bars, Junk, Bullion )
     @silver.delete_row(row_id, id)
   end
   def self.cash_input
     @silver.input_cash
+  end
+  def self.update_cash
+    print("Enter row ID: ")
+    row_id = gets.chomp
+    @silver.update_cash_own(row_id)
   end
   def self.menu
     rows = [[1, "Select Junk"],
@@ -475,7 +504,8 @@ module Silver
     [19, "Delete Row"],
     [20, "Enter Cash"],
     [21, "Select Cash"],
-    [22, "Quit"]]
+    [22, "Update Cash Own Status"],
+    [23, "Quit"]]
     print_table(rows)
   end
 end
@@ -559,7 +589,7 @@ while true
     end
     sleep 10
   when 19
-    menu = "1) Delete Bar row\n2) Delete Junk row\n3) Delete Bullion row\n\n\n\n\n"
+    menu = "1) Delete Bar row\n2) Delete Junk row\n3) Delete Bullion row4\n4) Delete Cash row\n\n\n\n"
     print(menu)
     print("Enter Option: ")
     option = gets.chomp
@@ -579,6 +609,10 @@ while true
       # Bullion
       Silver.delete_row_by_id(row_id, 3)
       Silver.select_bullion
+    when 4
+      # Cash
+      Silver.delete_row_by_id(row_id, 4)
+      Silver.select_cash
     else
       puts "Invalid option...."
     end
@@ -591,6 +625,9 @@ while true
     Silver.select_cash
     sleep 30
   when 22
+    Silver.update_cash
+    sleep 10
+  when 23
     exit
   end
 end
