@@ -216,7 +216,7 @@ class Inventory < Sql
   end
   def select_franklins
     # Find and list all of the records that include franklin half dollars in the junk table
-    @db.execute("select name from Junk where name like '%franklin%';")
+    @db.execute("select amount from Junk where name like '%franklin%';")
   end
   def select_method(id)
     table = get_options(id)
@@ -355,7 +355,11 @@ module Silver
   end
   def self.franklins
     # gets the count of franklin half dollars
-    count = @silver.select_franklins.count
+    count = 0
+    @silver.select_franklins.each do |c|
+      c = c.shift
+      count += c
+    end
     rows  = [["Franklin Half Count", count]]
     print_table(rows)
   end
