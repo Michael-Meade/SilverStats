@@ -319,6 +319,19 @@ module Silver
     t.style = {border: :unicode}
     puts t.render.green
   end
+  def self.save_total_oz
+    bar     = @silver.select_total_oz(1) # 1: Bar
+    junk    = @silver.select_total_oz(2) # 2: Junk
+    bullion = @silver.select_total_oz(3) # 3: Bullion
+    bar_amount     = get_silver_price(bar)     # Add amount of bars to the current price of Silver
+    junk_amount    = get_silver_price(junk)    # Add amount of Junk to the current price of Silver
+    bullion_amount = get_silver_price(bullion) # Add amount of Bullion to the current price of Silver 
+    total          = bar + junk + bullion
+    amount_all     = bar_amount + junk_amount + bullion_amount
+    time = Time.new
+    date = time.strftime("%m/%d/%Y")
+    File.open("silver_total.txt", 'a') { |file| file.write("#{date} #{amount_all}\n") }
+  end
   def self.total_oz
     bar     = @silver.select_total_oz(1) # 1: Bar
     junk    = @silver.select_total_oz(2) # 2: Junk
@@ -486,6 +499,17 @@ module Silver
     row_id = gets.chomp
     @silver.update_cash_own(row_id)
   end
+  def self.read_save_file
+    total = 0
+    count = 0
+    File.readlines("silver_total.txt").each do |line|
+      line = line.split(" ")
+      count += 1
+      total += line[1].to_i
+    end
+    avg = total / count
+    puts "AVG: #{avg}\n"
+  end
   def self.menu
     rows = [[1, "Select Junk"],
     [2, "Select Bar"],
@@ -509,7 +533,9 @@ module Silver
     [20, "Enter Cash"],
     [21, "Select Cash"],
     [22, "Update Cash Own Status"],
-    [23, "Quit"]]
+    [23, "Save Current Price"],
+    [24, "AVG Current Price"],
+    [25, "Quit"]]
     print_table(rows)
   end
 end
@@ -620,7 +646,6 @@ while true
     else
       puts "Invalid option...."
     end
-
     sleep 10
   when 20
     Silver.cash_input
@@ -632,6 +657,12 @@ while true
     Silver.update_cash
     sleep 10
   when 23
+    Silver.save_total_oz
+    sleep 10
+  when 24
+    Silver.read_save_file
+    sleep 30
+  when 25
     exit
   end
 end
