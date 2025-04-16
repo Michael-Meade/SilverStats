@@ -91,7 +91,7 @@ class Inventory < Sql
         end
       elsif t.to_s.eql?("Method")
         # quality control the Method Input
-        method_menu = "1) Reddit\n2) JMbullion\n3) APMEX\n4) Gift\n5) Unknown"
+        method_menu = "1) Reddit\n2) JMbullion\n3) APMEX\n4) Gift\n5) Unknown\n6) Ebay\n7) Other option"
         print(method_menu)
         print("\n\n\nEnter Method: ")
         method_input = gets.chomp
@@ -106,6 +106,12 @@ class Inventory < Sql
           r << "Gift"
         when 5
           r << "Unknown"
+        when 6
+          t << "Ebay"
+        when 7
+          print("Enter other option: ")
+          op = gets.chomp
+          r << op
           print("\n\n")
         end
         puts "\n\n\n"
@@ -261,6 +267,9 @@ class Inventory < Sql
     end
   end
   def update_cash_own(row_id)
+    # The row should only have the status as 'own' or 'sold'
+    # Depending what status it will do the oppsite of the value.
+    # For example if sold it will change to own, if own it will change to sold
     @db.execute("select status from Cash where id = '#{row_id}';").each do |row|
       row = row.shift
       if row.eql?('own')
@@ -275,6 +284,8 @@ class Inventory < Sql
     end
   end
   def sold_total(id)
+    # Get the total amount of sold value. This 
+    # can be done with any table ( junk, bullion, bars, etc)
     table = get_options(id) # get the type of silver
     total = 0
     @db.execute("select sold_value from #{table}").each do |sold|
@@ -300,6 +311,7 @@ class Inventory < Sql
     begin 
       @db.execute("delete from #{table} where id ='#{row_id}';")
     rescue => e
+      # prints the error in red
       puts "ERROR: #{e}".red
     end
   end
@@ -307,17 +319,20 @@ end
 module Silver
   @silver = Inventory.new
   def self.get_silver_price(amount)
+    # use Duck Duck go to get the current price of silver. It will take the 
+    # amount of silver and use this api to get the current worth of the silver.
     r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd")
     r_clean  = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
     json = JSON.parse(r_clean)["to"].shift
     return json["mid"]
   end
   def self.print_table(rows, headers=nil, title=nil)
+    # used to nicely print the information in a table.
     t = Terminal::Table.new :headings => headers, :title => title
     t.rows  =  rows
     t.style = {:all_separators => true}
     t.style = {border: :unicode}
-    puts t.render.green
+    puts t.render.green # print the table in green
   end
   def self.save_total_oz
     bar     = @silver.select_total_oz(1) # 1: Bar
@@ -360,6 +375,7 @@ module Silver
     @silver.select(4) # Cash
   end
   def self.price_avg
+    # Gets the avg price bought the different types of silver
     bar     = @silver.select_price_avg(1) # Bar
     junk    = @silver.select_price_avg(2) # Junk
     bullion = @silver.select_price_avg(3) # Bullion
@@ -430,16 +446,18 @@ module Silver
             ["Bullion Sold Count", results[5]]]
     print_table(rows)
     print("\n\n")
-    rows = @silver.select_method(1) # Select Bae
+    rows = @silver.select_method(1) # Select Bar
     print_table(rows, ["Site", "Count"], "Bar Silver")
     rows = @silver.select_method(2) # Selects Junk
     print_table(rows, ["Site", "Count"], "Junk Silver")
     rows = @silver.select_method(3) # Select Bullion
+    # print the table for bullion
     print_table(rows, ["Site", "Count"], "Bullion Silver")
 
     self.select_sold_oz_total
   end
   def self.sold_vs_own
+    # get all the sold items
     results = @silver.sold_own
     rows = [["Bar Own Count", results[0]],
             ["Junk Own Count", results[1]],
@@ -492,14 +510,17 @@ module Silver
     @silver.delete_row(row_id, id)
   end
   def self.cash_input
+    # intput cash information into the table Cash
     @silver.input_cash
   end
   def self.update_cash
+    # add cash to the Cash table by row id
     print("Enter row ID: ")
     row_id = gets.chomp
     @silver.update_cash_own(row_id)
   end
   def self.read_save_file
+    # gets the average of silver from the file "silver_total.txt"
     total = 0
     count = 0
     File.readlines("silver_total.txt").each do |line|
@@ -511,6 +532,7 @@ module Silver
     puts "AVG: #{avg}\n"
   end
   def self.menu
+    # Shows the menu in a nice table. 
     rows = [[1, "Select Junk"],
     [2, "Select Bar"],
     [3, "Select All Total OZ"],
@@ -559,21 +581,27 @@ while true
     Silver.price_avg
     sleep 10
   when 5
+    # display all the amounts in nice unicode table 
     Silver.display_all
     sleep 10
   when 6
     Silver.sold_vs_own
     sleep 10
   when 7
+    # Enter new bars into the Bar table.
     Silver.enter_bar
     sleep 10
   when 8
     Silver.franklins
     sleep 10
   when 9
+    # prints the method of purchase in a nice
+    # unicode terminal that is green
     Silver.method_of_purchase
     sleep 10
   when 10
+    # Enter junk silver into the Junk 
+    # table 
     Silver.enter_junk
     sleep 10
   when 11
