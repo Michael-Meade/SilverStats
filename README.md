@@ -2,6 +2,8 @@
 
 Note that the database included and shown is not my real stack information. I do not want to show
 that inforamtion because it's bad op sec.
+
+
 ## Menu 
 This takes a number. Right now it is 1 through 18..
 ![menu of the program](images/menu.png)
@@ -21,5 +23,14 @@ Get the total of all Sold items.
 ![Sold Total](images/sold_total.png)
 
 ## Update Sold Value
-Update the sold value. This is used when you sell one of your piece of silver.
+Update the sold value. This is used when you sell one of your piece of silver.<br>
 ![Sold Value](images/update_sold.png)
+
+## Forecast Silver
+This feature will take the inputed silver amount and use Duck Duck Go API to
+get how much the amount of silver is worth in USD. <Br>
+![Forecase Silver](images/forecast_silver.png)
+
+## Back Up DB
+This will back up the db by saving a copy of it with a new name. <br>
+![BackUp DB](images/backup_db.png)

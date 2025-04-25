@@ -4,17 +4,16 @@ require 'colorize'
 require 'terminal-table'
 require 'json'
 require 'httparty'
+require 'logger'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
-    #'test_db.db'
-    #'test2.db'
-    #'test_db.db'
     #'test_db.db'
     begin
       @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);")
     rescue => e
       puts "ERROR: #{e}".red
+      Logger.error("Error with creating Cash table: #{e}")
     end
     begin
       ["Bar", "Junk", "Bullion"].each do |table|
@@ -33,10 +32,12 @@ class Sql
       end
     rescue SQLite3::SQLException => e
       puts "#{e}"
+      Logger.error("Error with creating table: #{e}")
     end
   end
 end
 class Inventory < Sql
+  Logger = Logger.new("logs.txt")
   def get_options(id)
     case id.to_i
     when 1
@@ -95,6 +96,7 @@ class Inventory < Sql
         print(method_menu)
         print("\n\n\nEnter Method: ")
         method_input = gets.chomp
+        Logger.info("Entered method, #{method_input}")
         case method_input.to_i
         when 1
           r << "Reddit"
@@ -119,36 +121,50 @@ class Inventory < Sql
         oz_menu  = "\n\n\n1) 1 oz\n2) 0.3617 oz (Franklin Half Dollar)\n3) 2 oz\n4) 0.07234 oz (Mercury dimes)"
         oz_menu2 = "\n5) 0.36169 oz (walkers)\n6) 0.77344 oz (peace dollar)\n7) 0.18084 oz (Washington Quarter)"
         oz_menu3 = "\n8) 0.3161 oz (Eisenhower dollar)\n9) 0.1479 oz (Kennedy Half Dollars)"
-        oz_menu4 = "\n10) 0.05626 oz (Jefferson nickel)\n11) Other\n\n\n"
+        oz_menu4 = "\n10) 0.05626 oz (Jefferson nickel)\n11) 0.5 oz\n12) Other\n\n"
         print(oz_menu + oz_menu2 + oz_menu3 + oz_menu4)
         print("\n\n")
         print("Enter OZ amount: ")
         oz_input = gets.chomp
         case oz_input.to_i
         when 1
-          r << "1"
+          r << "1" 
+          Logger.info("Entered 1 oz")
         when 2
           r << "0.3617"
+          Logger.info("Entered 0.3617 oz")
         when 3
           r << "2"
+          Logger.info("Entered 2 oz")
         when 4
           r << "0.07234"
+          Logger.info("Entered 0.07234 oz")
         when 5
           r << "0.36169"
+          Logger.info("Entered 0.36169 oz")
         when 6
           r << "0.77344"
+          Logger.info("Entered 0.77344 oz")
         when 7
           r << "0.18084"
+          Logger.info("Entered 0.18084 oz") 
         when 8
           r << "0.3161"
+          Logger.info("Entered 0.3161 oz")
         when 9
           r << "0.1479"
+          Logger.info("Entered 0.1479 oz")
         when 10
           r << "0.05626"
+          Logger.info("Entered 0.05626 oz")
         when 11
+          r << "0.5"
+          Logger.info("Entered 0.5 oz")
+        when 12
           print("Enter OZ amount: ")
           amount = gets.chomp 
           r << amount
+          Logger.info("Entered #{amount}")
         end
       else
         print("Enter #{t}:")
@@ -158,6 +174,7 @@ class Inventory < Sql
     end
     @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", nil, r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7],
                 r[8], r[9], r[10], r[11]
+  Logger.info("Insert into table #{table_name} -\n\n\n bought_date: #{r[0]} \n spot price: #{r[1]} \n Amount: #{r[2]} \n Price: #{r[3]} \n Shipping: #{r[4]} \n Total: #{r[5]} \n OZ: #{r[6]} \n Name: #{r[7]} \n Status: #{r[8]} \n Sold value: #{r[9]} \n Seller: #{r[10]} \n Method: #{r[11]}" )
   end
   def input_cash
     print("Enter amount of Cash: ")
@@ -165,6 +182,7 @@ class Inventory < Sql
     print("Enter from who: ")
     from = gets.chomp
     @db.execute "insert into Cash values (?, ?, ?, ?, ?)", nil, cash_amount, from, "own", 0
+    Logger.info("Entered #{cash_amount} from #{from}")
   end
   def select_price_avg(id)
     begin
@@ -179,6 +197,7 @@ class Inventory < Sql
       total / count # get the average
     rescue => e
       puts "ERROR: #{e}".red
+      Logger.error("Error: #{e} \n table: #{table}")
     end
   end
   def select(id)
@@ -189,6 +208,8 @@ class Inventory < Sql
       end
     rescue SQLite3::SQLException => e
       puts "ERROR: #{e}".red
+      Logger.error("Error with selecting table: #{table}")
+      Logger.error("error: #{e}")
     end
   end
   def shipping_total(id)
@@ -198,15 +219,17 @@ class Inventory < Sql
       row = row.shift
       total_shipping += row
     end
+    Logger.info("Shipping total #{table}: #{total_shipping}")
     total_shipping
   end
   def select_total_oz(id)
     table = get_options(id) # Get the type of silver
     total_oz = 0
-    @db.execute("select oz from #{table};").each do |row|
+    @db.execute("select oz from #{table} where status = 'own';").each do |row|
       row = row.shift
       total_oz += row
     end
+    Logger.info("Total oz #{table}: #{total_oz}")
     total_oz
   end
   def sold_own
@@ -222,9 +245,10 @@ class Inventory < Sql
   end
   def select_franklins
     # Find and list all of the records that include franklin half dollars in the junk table
-    @db.execute("select amount from Junk where name like '%franklin%';")
+    @db.execute("select amount from Junk where name like '%franklin%' where status = 'own';")
   end
   def select_method(id)
+    # get table by id ( junk, bullion, bars )
     table = get_options(id)
     meth = {}
     @db.execute("select method from #{table};").each do |row|
@@ -250,9 +274,13 @@ class Inventory < Sql
     @db.execute("select status from #{table} where id = '#{row_id}';").each do |row|
       row = row.shift
       if row.eql?('own')
+        # if own then changes it to sold
         @db.execute("UPDATE #{table} SET status = 'sold' WHERE id='#{row_id}';")
+        Logger.info("Updated #{table} changed row: #{row_id} status to sold")
       else
+        # if 'sold' then it changes it to own
         @db.execute("UPDATE #{table} SET status = 'own' WHERE id='#{row_id}';")
+        Logger.info("Updated #{table} changed row: #{row_id} status to own")
       end
       #next unless row.eql?('own')
       if id.to_i <= 3
@@ -261,6 +289,7 @@ class Inventory < Sql
         # make sure input is a number. 
         if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/) 
           @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
+          Logger.info("Updated #{table} changed row: #{row_id} with #{sold_price}")
         end
         print("\n\n\n")
       end
@@ -273,14 +302,19 @@ class Inventory < Sql
     @db.execute("select status from Cash where id = '#{row_id}';").each do |row|
       row = row.shift
       if row.eql?('own')
+        # Changes own to spent
         @db.execute("UPDATE Cash SET status = 'spent' WHERE id='#{row_id}';")
+        Logger.info("Cash Table: Changed from 'own' to 'spent' on row: #{row_id}")
       else
+        # changes spent to own
         @db.execute("UPDATE Cash SET status = 'own' WHERE id='#{row_id}';")
+        Logger.info("Cash Table: Changed from 'spent' to 'own' on row: #{row_id}")
       end
       print("Enter Spent Amount: ")
+      # Update the spent amount
       spent_amount = gets.chomp
       @db.execute("UPDATE Cash SET spent_amount = '#{spent_amount}' WHERE id='#{row_id}';")
-
+      Logger.info("Updated cash table. Updated 'spent_amount' with #{spent_amount} with row_id: #{row_id}")
     end
   end
   def sold_total(id)
@@ -298,7 +332,7 @@ class Inventory < Sql
   def sold_oz_total(id)
     # gets the type of silver
     table    = get_options(id)
-    total_oz = 0
+    total_oz = 0 # used to total the total oz
     @db.execute("select OZ from #{table}").each do |oz|
       os = os.shift
       total_oz += oz.to_i
@@ -308,20 +342,25 @@ class Inventory < Sql
   def delete_row(row_id, id)
     # Get the type of silver
     table = get_options(id) 
+     Logger.info("Deleting the row with row_id: #{row_id} on the #{table} table")
     begin 
+      # Deletes the row by the given 'row_id'
       @db.execute("delete from #{table} where id ='#{row_id}';")
+      Logger.info("Deleted row, #{row_id} from the #{table} table.")
     rescue => e
       # prints the error in red
       puts "ERROR: #{e}".red
+      Logger.error("Error with deleting the row with row_id: #{row_id} on the #{table} table")
     end
   end
 end
 module Silver
   @silver = Inventory.new
   def self.get_silver_price(amount)
+    ua = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3"
     # use Duck Duck go to get the current price of silver. It will take the 
     # amount of silver and use this api to get the current worth of the silver.
-    r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd")
+    r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd", { headers: {"User-Agent" => ua}}).body
     r_clean  = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
     json = JSON.parse(r_clean)["to"].shift
     return json["mid"]
@@ -342,9 +381,10 @@ module Silver
     junk_amount    = get_silver_price(junk)    # Add amount of Junk to the current price of Silver
     bullion_amount = get_silver_price(bullion) # Add amount of Bullion to the current price of Silver 
     total          = bar + junk + bullion
-    amount_all     = bar_amount + junk_amount + bullion_amount
+    amount_all     = bar_amount + junk_amount + bullion_amount # add bar, junk and bullion total together ( $USD )
     time = Time.new
     date = time.strftime("%m/%d/%Y")
+    puts "Amount: $#{amount_all}"
     File.open("silver_total.txt", 'a') { |file| file.write("#{date} #{amount_all}\n") }
   end
   def self.total_oz
@@ -531,6 +571,13 @@ module Silver
     avg = total / count
     puts "AVG: #{avg}\n"
   end
+  def self.silver_forecast
+    # Enter amount of silver and see how much it is worth in USD
+    print("Enter forecast silver OZ:")
+    amount  = gets.chomp
+    results = self.get_silver_price(amount)
+    puts "Forecasted Silver Price: $#{results}"
+  end
   def self.menu
     # Shows the menu in a nice table. 
     rows = [[1, "Select Junk"],
@@ -557,7 +604,8 @@ module Silver
     [22, "Update Cash Own Status"],
     [23, "Save Current Price"],
     [24, "AVG Current Price"],
-    [25, "Quit"]]
+    [25, "Silver Forecast"],
+    [26, "Quit"]]
     print_table(rows)
   end
 end
@@ -569,12 +617,15 @@ while true
   print("\n\n\n")
   case choice.to_i
   when 1
+    # dispaly the Junk table 
     Silver.select_junk
     sleep 10
   when 2
+    # Display the bar table
     Silver.select_bar
     sleep 10
   when 3
+    # Show unicode table of total oz
     Silver.total_oz
     sleep 10
   when 4
@@ -592,6 +643,7 @@ while true
     Silver.enter_bar
     sleep 10
   when 8
+    # Show franklin count
     Silver.franklins
     sleep 10
   when 9
@@ -656,13 +708,14 @@ while true
     row_id = gets.chomp
     case option.to_i
     when 1
-      # Bar 
+      # Delete certain row from Bar table
       Silver.delete_row_by_id(row_id, 1)
+      # Display the bar table
       Silver.select_bar
     when 2
-      # Junk
+      # Delete certain row from Junk Table
       Silver.delete_row_by_id(row_id, 2)
-      Silver.select_junk
+      Silver.select_junk # display the junk table
     when 3
       # Bullion
       Silver.delete_row_by_id(row_id, 3)
@@ -676,12 +729,16 @@ while true
     end
     sleep 10
   when 20
+    # Enter new cash information into the 
+    # cash table.
     Silver.cash_input
     sleep 30
   when 21
+    # Display the cash table
     Silver.select_cash
     sleep 30
   when 22
+    # Update cash own status
     Silver.update_cash
     sleep 10
   when 23
@@ -691,6 +748,9 @@ while true
     Silver.read_save_file
     sleep 30
   when 25
+    Silver.silver_forecast
+    sleep 30
+  when 26
     exit
   end
 end
