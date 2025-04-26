@@ -7,7 +7,8 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test2.db'
+    @db = SQLite3::Database.new 'test_db.db'
+    #'test2.db'
     #'test_db.db'
     begin
       @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);")
@@ -322,7 +323,7 @@ class Inventory < Sql
     # can be done with any table ( junk, bullion, bars, etc)
     table = get_options(id) # get the type of silver
     total = 0
-    @db.execute("select sold_value from #{table}").each do |sold|
+    @db.execute("select sold_value from #{table} where status='sold';").each do |sold|
       # removes [] from the sold variable
       sold = sold.shift
       total += sold.to_i
@@ -330,13 +331,15 @@ class Inventory < Sql
   total
   end
   def sold_oz_total(id)
+    # Get the total amount of oz sold
     # gets the type of silver
     table    = get_options(id)
     total_oz = 0 # used to total the total oz
-    @db.execute("select OZ from #{table}").each do |oz|
+    @db.execute("select OZ from #{table} where status='sold'").each do |oz|
       os = os.shift
       total_oz += oz.to_i
     end
+  Logger.info("Getting sold OZ total from the table #{table} --> #{total_oz} oz")
   total_oz
   end
   def delete_row(row_id, id)
@@ -384,6 +387,7 @@ module Silver
     amount_all     = bar_amount + junk_amount + bullion_amount # add bar, junk and bullion total together ( $USD )
     time = Time.new
     date = time.strftime("%m/%d/%Y")
+    Logger.info("Saving the total oz to the file 'silver_total.txt --> #{amount_all} oz")
     puts "Amount: $#{amount_all}"
     File.open("silver_total.txt", 'a') { |file| file.write("#{date} #{amount_all}\n") }
   end
@@ -534,9 +538,9 @@ module Silver
   def self.select_sold_oz_total
     # displays the total oz that was sold in
     # a nice table
-    bar_total     = @silver.sold_total(1) # 1: Bar
-    junk_total    = @silver.sold_total(2) # 2: Junk
-    bullion_total = @silver.sold_total(3) # 3: Bullion
+    bar_total     = @silver.sold_oz_total(1) # 1: Bar
+    junk_total    = @silver.sold_oz_total(2) # 2: Junk
+    bullion_total = @silver.sold_oz_total(3) # 3: Bullion
     combine_total = bar_total + junk_total + bullion_total
     rows = [["Bar Sold OZ Total",     bar_total],
             ["Junk Sold OZ Total",    junk_total],
