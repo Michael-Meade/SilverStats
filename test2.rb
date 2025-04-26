@@ -245,7 +245,7 @@ class Inventory < Sql
   end
   def select_franklins
     # Find and list all of the records that include franklin half dollars in the junk table
-    @db.execute("select amount from Junk where name like '%franklin%' where status = 'own';")
+    @db.execute("select amount from Junk where name like '%franklin%' AND status = 'own';")
   end
   def select_method(id)
     # get table by id ( junk, bullion, bars )
