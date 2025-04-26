@@ -19,7 +19,7 @@ determining the avg.
 ![Price AVG](images/price_avg.png)
 
 ## Sold Total
-Get the total of all Sold items.
+Get the total of all Sold items.<br>
 ![Sold Total](images/sold_total.png)
 
 ## Update Sold Value

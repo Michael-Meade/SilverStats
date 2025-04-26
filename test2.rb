@@ -336,7 +336,7 @@ class Inventory < Sql
     table    = get_options(id)
     total_oz = 0 # used to total the total oz
     @db.execute("select OZ from #{table} where status='sold'").each do |oz|
-      os = os.shift
+      oz = oz.shift
       total_oz += oz.to_i
     end
   Logger.info("Getting sold OZ total from the table #{table} --> #{total_oz} oz")
