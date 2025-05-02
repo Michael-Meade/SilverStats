@@ -7,8 +7,7 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test_db.db'
-    #'test2.db'
+    @db = SQLite3::Database.new 'test2.db'
     #'test_db.db'
     begin
       @db.execute("create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);")
@@ -110,7 +109,7 @@ class Inventory < Sql
         when 5
           r << "Unknown"
         when 6
-          t << "Ebay"
+          r << "Ebay"
         when 7
           print("Enter other option: ")
           op = gets.chomp
@@ -387,7 +386,6 @@ module Silver
     amount_all     = bar_amount + junk_amount + bullion_amount # add bar, junk and bullion total together ( $USD )
     time = Time.new
     date = time.strftime("%m/%d/%Y")
-    Logger.info("Saving the total oz to the file 'silver_total.txt --> #{amount_all} oz")
     puts "Amount: $#{amount_all}"
     File.open("silver_total.txt", 'a') { |file| file.write("#{date} #{amount_all}\n") }
   end
