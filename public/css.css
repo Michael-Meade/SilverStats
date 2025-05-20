@@ -1,0 +1,225 @@
+  .blue_box {
+
+    width: auto;
+
+    height: auto;
+
+    border: 2px solid blue;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .green_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid green;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .yellow_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid yellow;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .red_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid red;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .orange_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid #be4d25;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+  .white_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid white;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .purple_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid purple;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .violet_box {
+
+    width: 65%;
+
+    height: auto;
+
+    border: 2px solid #Ff2100;
+
+    padding: 10px;
+
+    margin: auto;
+
+  }
+
+  .tabs {
+
+  list-style: none;
+
+  position: relative;
+
+  margin: 0;
+
+  padding: 0;
+
+  width: 100%; 
+
+  font-family: sans-serif
+
+}
+
+.tabs li {
+
+  display: inline-block;
+
+}
+
+.tabs input[type="radio"] {
+
+  display: none;
+
+}
+
+ 
+
+.tabs .tab-panel { 
+
+  display: none;
+
+  overflow: hidden;
+
+  width: 100%; 
+
+  position: absolute;
+
+  left: 0;
+
+  border-top: 2px solid yellow;
+  
+  white-space: nowrap;
+
+}
+
+  .tabs label[id^="t"] {
+
+  display: block;
+
+  cursor: pointer;
+
+  padding: 10px 15px;
+
+  border: 2px solid;
+
+  border-bottom: 0;
+
+  border-radius: 3px 3px 0 0;
+
+}
+
+  
+  input[type=text] {
+    width: 100%;
+    padding: auto 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+
+
+
+  
+  div { display: inline-block; }
+
+  div1 { display: block }
+
+  div2 { display: inline-block }
+
+  div label { display: block; }
+
+  form { text-align: center;}
+
+  .tabs [id^="tab"]:checked + label {  
+
+  background-color: black;
+
+  color: #fff;
+
+}
+
+.tabs [id^="tab"]:checked ~ [id^="tab-panel"] {
+
+  display: block;
+
+}
+#signin textarea {
+    resize: none;
+}
+
+#signin input {
+ background-color:#FFF;
+ min-height:200px;
+
+}
+.ips-input-box {
+  width: 300px;
+  height: 50px;
+}
+a {
+  color: hotpink;
+}

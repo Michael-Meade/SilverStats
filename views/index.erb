@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+      table, th, td { border: 1px solid yellow; border-collapse: collapse; font-size: 20}
+      tr:nth-child(even) {background-color: #304254;}
+      hr.new1 { border-top: 1px solid red; }
+    </style>
+  </head>
+  <body>
+    <body style="background-color: #121212;">
+    <font color="yellow">
+      <h1><center>Silver Stats</center></h1>
+    <p>
+      <% @silver = Inventory.new %>
+      <% bar     = @silver.select_total_oz(1) %>
+      <% junk    = @silver.select_total_oz(2) %>
+      <% bullion = @silver.select_total_oz(3) %>
+      <% total   = bar + junk + bullion %>
+      <table style="width:50%" border="1" align="center">
+        <tr>
+          <th>Type</th>
+          <th>Amount OZ</th>
+          <th>USD Total</th>
+        </tr>
+        <tr>
+          <td><font color="white">Bar</font></td>
+          <td><%= @silver.select_price_avg(1).round(2) %> oz</td>
+          <td><font color="#1CE815">$<%= Silver.get_silver_price(bar).round(2) %></font></td>
+        </tr>
+        <tr>
+          <td><font color="white">Junk</font></td>
+          <td><%= @silver.select_price_avg(2).round(2) %> oz</td>
+          <td><font color="#1CE815">$<%= Silver.get_silver_price(junk).round(2) %></font></td>
+        </tr>
+        <tr>
+          <td><font color="white">Bullion</font></td>
+          <td><%= @silver.select_price_avg(3).round(2) %> oz</td>
+          <td><font color="#1CE815">$<%= Silver.get_silver_price(bullion).round(2) %></font></td>
+        </tr>
+        <tr>
+          <td><font color="white">Total</font></td>
+          <td><%= total.round(2) %> oz</td>
+          <td><font color="#1CE815">$<%= Silver.get_silver_price(total).round(2) %></font></td>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <h1><center>Franklin Half Dollars</center></h1> 
+      <table style="width:50%" border="1" align="center">
+        <tr>
+          <th>Franklin Half Dollars Count</th>
+          <th>Silver Amount</th>
+          <th>Silver Amound in USD</th>
+        </tr>
+        <tr>
+          <td><font color="white"><%= Silver.franklins(html_table: true)[0] %></font></td>
+          <td><font color="white"><%= Silver.franklins(html_table: true)[1] %> OZ</font></td>
+          <td><font color="#1CE815">$<%= Silver.get_silver_price(Silver.franklins(html_table: true)[1]).round(2) %></font></td>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <h1><center>Select Junk Silver</center></h1> 
+      <table style="width:50%" border="1" align="center">
+        <tr>
+          <th>ID</th>
+          <th>Bought Date</th>
+          <th>Spot Price</th>
+          <th>Amount</th>
+          <th>Price</th>
+          <th>Shipping</th>
+          <th>Total</th>
+          <th>OZ</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Sold Value</th>
+          <th>Seller</th>
+          <th>Method</th>
+        </tr>
+        <% junk =  @silver.select(2, html_table: true) %>
+          <% junk.each do |i| %>
+        <tr>
+            <td><font color="white"><%= i[0] %></font></td>
+            <td><font color="white"><%= i[1] %></font></td>
+            <td><font color="white"><%= i[2] %></font></td>
+            <td><font color="white"><%= i[3] %></font></td>
+            <td><font color="white"><%= i[4] %></font></td>
+            <td><font color="white"><%= i[5] %></font></td>
+            <td><font color="white"><%= i[6] %></font></td>
+            <td><font color="white"><%= i[7] %></font></td>
+            <td><font color="white"><%= i[8] %></font></td>
+            <td><font color="white"><%= i[9] %></font></td>
+            <td><font color="white"><%= i[10] %></font></td>
+            <td><font color="white"><%= i[11] %></font></td>
+            <td><font color="white"><%= i[12] %></font></td>
+          <% end %>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <h1><center>Select Bars Silver</center></h1> 
+      <table style="width:100%" border="1" align="center">
+        <tr>
+          <th>ID</th>
+          <th>Bought Date</th>
+          <th>Spot Price</th>
+          <th>Amount</th>
+          <th>Price</th>
+          <th>Shipping</th>
+          <th>Total</th>
+          <th>OZ</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Sold Value</th>
+          <th>Seller</th>
+          <th>Method</th>
+        </tr>
+        <% junk =  @silver.select(1, html_table: true) %>
+          <% junk.each do |i| %>
+        <tr>
+            <td><font color="white"><%= i[0] %></font></td>
+            <td><font color="white"><%= i[1] %></font></td>
+            <td><font color="white"><%= i[2] %></font></td>
+            <td><font color="white"><%= i[3] %></font></td>
+            <td><font color="white"><%= i[4] %></font></td>
+            <td><font color="white"><%= i[5] %></font></td>
+            <td><font color="white"><%= i[6] %></font></td>
+            <td><font color="white"><%= i[7] %></font></td>
+            <td><font color="white"><%= i[8] %></font></td>
+            <td><font color="white"><%= i[9] %></font></td>
+            <td><font color="white"><%= i[10] %></font></td>
+            <td><font color="white"><%= i[11] %></font></td>
+            <td><font color="white"><%= i[12] %></font></td>
+          <% end %>
+        </tr>
+      </table>
+      <br>
+      <br>
+      <h1><center>Select Bullions Silver</center></h1> 
+      <table style="width:50%" border="1" align="center">
+        <tr>
+          <th>ID</th>
+          <th>Bought Date</th>
+          <th>Spot Price</th>
+          <th>Amount</th>
+          <th>Price</th>
+          <th>Shipping</th>
+          <th>Total</th>
+          <th>OZ</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Sold Value</th>
+          <th>Seller</th>
+          <th>Method</th>
+        </tr>
+        <% junk =  @silver.select(3, html_table: true) %>
+          <% junk.each do |i| %>
+        <tr>
+            <td><font color="white"><%= i[0] %></font></td>
+            <td><font color="white"><%= i[1] %></font></td>
+            <td><font color="white"><%= i[2] %></font></td>
+            <td><font color="white"><%= i[3] %></font></td>
+            <td><font color="white"><%= i[4] %></font></td>
+            <td><font color="white"><%= i[5] %></font></td>
+            <td><font color="white"><%= i[6] %></font></td>
+            <td><font color="white"><%= i[7] %></font></td>
+            <td><font color="white"><%= i[8] %></font></td>
+            <td><font color="white"><%= i[9] %></font></td>
+            <td><font color="white"><%= i[10] %></font></td>
+            <td><font color="white"><%= i[11] %></font></td>
+            <td><font color="white"><%= i[12] %></font></td>
+          <% end %>
+        </tr>
+      </table>
+
+    </p>
+  </body>
+</html>
