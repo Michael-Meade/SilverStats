@@ -185,7 +185,7 @@ class Inventory < Sql
     @db.execute "insert into Cash values (?, ?, ?, ?, ?)", nil, cash_amount, from, "own", 0
     Logger.info("Entered #{cash_amount} from #{from}")
   end
-  def select_price_avg(id)
+  def select_price_avg(id, html_table: false)
     begin
       count = 0
       total = 0
@@ -234,6 +234,7 @@ class Inventory < Sql
   def select_total_oz(id)
     table = get_options(id) # Get the type of silver
     total_oz = 0
+
     @db.execute("select oz from #{table} where status = 'own';").each do |row|
       row = row.shift
       total_oz += row
@@ -256,7 +257,7 @@ class Inventory < Sql
     # Find and list all of the records that include franklin half dollars in the junk table
     @db.execute("select amount from Junk where name like '%franklin%' AND status = 'own';")
   end
-  def select_method(id)
+  def select_method(id, html_table: false)
     # get table by id ( junk, bullion, bars )
     table = get_options(id)
     meth = {}
@@ -336,7 +337,7 @@ class Inventory < Sql
       sold = sold.shift
       total += sold.to_i
     end
-  total
+    total
   end
   def sold_oz_total(id)
     # Get the total amount of oz sold
