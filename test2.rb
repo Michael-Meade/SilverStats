@@ -7,7 +7,9 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test_db.db'
+    @db = SQLite3::Database.new 'test2.db'
+
+    # test2.db
     #'test2.db'
     #'test_db.db'
     begin
@@ -221,6 +223,18 @@ class Inventory < Sql
     html_out
     end
   end
+  def shipping_avg(id)
+    total_shipping = 0
+    count = 0
+    table = get_options(id) # Get the type of silver.
+    @db.execute("select shipping from #{table};").each do |row|
+      row = row.shift
+      total_shipping += row
+      count += 1
+    end
+    Logger.info("Shipping avg #{table}: #{total_shipping / count}")
+    [ total_shipping / count, count ]
+  end
   def shipping_total(id)
     table = get_options(id) # Get the type of silver
     total_shipping = 0
@@ -250,6 +264,7 @@ class Inventory < Sql
     junk_sold     = @db.execute("select status from Junk where status = 'sold';").count
     bullion_own   = @db.execute("select status from Bullion where status = 'own';").count
     bullion_sold  = @db.execute("select status from Bullion where status = 'sold';").count
+    
   #         0         1        2          3             4            5
   return bar_own, junk_own, bar_sold, junk_sold, bullion_own, bullion_sold
   end
