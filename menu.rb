@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require_relative 'test2'
-while true
+loop do
   print("\n\n\n\n")
   Silver.menu
-  print("Enter choice:")
+  print('Enter choice:')
   choice = gets.chomp
   print("\n\n\n")
   case choice.to_i
   when 1
-    # dispaly the Junk table 
+    # dispaly the Junk table
     Silver.select_junk
     sleep 10
   when 2
@@ -22,7 +24,7 @@ while true
     Silver.price_avg
     sleep 10
   when 5
-    # display all the amounts in nice unicode table 
+    # display all the amounts in nice unicode table
     Silver.display_all
     sleep 10
   when 6
@@ -42,17 +44,17 @@ while true
     Silver.method_of_purchase
     sleep 10
   when 10
-    # Enter junk silver into the Junk 
-    # table 
+    # Enter junk silver into the Junk
+    # table
     Silver.enter_junk
     sleep 10
   when 11
-    print("Enter Row ID:")
+    print('Enter Row ID:')
     row_id = gets.chomp
     # Bars - update own and/or sold
     Silver.change_own_status(row_id, 1)
   when 12
-    print("Enter Row ID:")
+    print('Enter Row ID:')
     row_id = gets.chomp
     # Junk - update own and/or sold
     Silver.change_own_status(row_id, 2)
@@ -66,7 +68,7 @@ while true
     sleep 10
   when 15
     # Bullion - update own and/or sold
-    print("Enter Row ID: ")
+    print('Enter Row ID: ')
     row_id = gets.chomp
     Silver.change_own_status(row_id, 3)
     sleep 10
@@ -78,12 +80,12 @@ while true
     sleep 10
   when 18
     # copy DB file
-    print("Enter DB File you want to copy: ")
+    print('Enter DB File you want to copy: ')
     file_to_copy = gets.chomp
     if File.exist?(file_to_copy)
-      print("Enter the new name you want to name the db:")
+      print('Enter the new name you want to name the db:')
       new_name = gets.chomp
-      FileUtils.cp( file_to_copy, new_name )
+      FileUtils.cp(file_to_copy, new_name)
     else
       puts "#{file_to_copy} does not exist.\n".red
     end
@@ -91,10 +93,10 @@ while true
   when 19
     menu = "1) Delete Bar row\n2) Delete Junk row\n3) Delete Bullion row4\n4) Delete Cash row\n\n\n\n"
     print(menu)
-    print("Enter Option: ")
+    print('Enter Option: ')
     option = gets.chomp
     print("\n\n")
-    print("Enter Row ID: ")
+    print('Enter Row ID: ')
     row_id = gets.chomp
     case option.to_i
     when 1
@@ -115,11 +117,11 @@ while true
       Silver.delete_row_by_id(row_id, 4)
       Silver.select_cash
     else
-      puts "Invalid option...."
+      puts 'Invalid option....'
     end
     sleep 10
   when 20
-    # Enter new cash information into the 
+    # Enter new cash information into the
     # cash table.
     Silver.cash_input
     sleep 30
