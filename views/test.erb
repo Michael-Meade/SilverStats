@@ -99,8 +99,8 @@
                   <td><font color="white"><%= i[10] %></font></td>
                   <td><font color="white"><%= i[11] %></font></td>
                   <td><font color="white"><%= i[12] %></font></td>
-                <% end %>
                 </tr>
+                <% end %>
               </table>
               <h1>Bar Silver Method of Purchase</h1>
               <table style="width:50%" border="1" align="center">
@@ -213,8 +213,8 @@
                   <td><font color="white"><%= i[10] %></font></td>
                   <td><font color="white"><%= i[11] %></font></td>
                   <td><font color="white"><%= i[12] %></font></td>
-                <% end %>
                 </tr>
+                <% end %>
               </table>
               <br><br>
               <h1>Junk Silver Method of Purchase</h1>
@@ -239,8 +239,8 @@
                   <th>Average</th>
                   <th>Count  </th>
                 </tr>
-                <% total_junk_shipping = @silver.shipping_total(2)  %>
-                <% avg_junk_shipping   = @silver.shipping_avg(2)    %>
+                <% total_junk_shipping = @silver.shipping_total(2)   %>
+                <% avg_junk_shipping   = @silver.shipping_avg(2)     %>
                   <tr>
                     <td><font color="white"><%= total_junk_shipping  %>  </font></td>
                     <td><font color="white"><%= avg_junk_shipping[0] %>  </font></td>
@@ -299,7 +299,7 @@
                   <td><font color="white"><%= junk_sold[1]    %></font></td>
                   <td><font color="white"><%= junk_sold[3]    %></font></td>
                   <td><font color="white"><%= junk_sold_total %></font></td>
-                  <td><font color="white">$<%= junk_usd %></font></td>
+                  <td><font color="white">$<%= junk_usd       %></font></td>
                 </tr>
               </table>
               <br><br>
@@ -342,8 +342,8 @@
                   <td><font color="white"><%= i[10] %></font></td>
                   <td><font color="white"><%= i[11] %></font></td>
                   <td><font color="white"><%= i[12] %></font></td>
-                <% end %>
                 </tr>
+                <% end %>
               </table>
               <br><br>
               <h1>Bullion Silver Method of Purchase</h1>
@@ -368,8 +368,8 @@
                   <th>Average</th>
                   <th>Count  </th>
                 </tr>
-                <% bullion_shipping    = @silver.shipping_total(3)  %>
-                <% avg_bull_shipping   = @silver.shipping_avg(3)    %>
+                <% bullion_shipping    = @silver.shipping_total(3)   %>
+                <% avg_bull_shipping   = @silver.shipping_avg(3)     %>
                   <tr>
                     <td><font color="white"><%= bullion_shipping     %>  </font></td>
                     <td><font color="white"><%= avg_bull_shipping[0] %>  </font></td>
@@ -401,7 +401,7 @@
               <br><br>
               <h1>Bullion Sold vs Own</h1>
               <% sold =  @silver.sold_own %>
-              <% bull_sold_total = @silver.sold_oz_total(3)%>
+              <% bull_sold_total = @silver.sold_oz_total(3) %>
               <% bull_usd = Silver.get_silver_price(bull_sold_total) %>
               <table style="width:50%" border="1" align="center">
 

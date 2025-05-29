@@ -8,7 +8,7 @@ require 'logger'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
-
+    # 'test2.db'
     # test2.db
     #'test2.db'
     #'test_db.db'
@@ -52,6 +52,13 @@ class Inventory < Sql
     when 4
       "Cash"
     end
+  end
+  def input_site(id, params)
+    r = params
+    table_name = get_options(id)
+    @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", nil, r["bought_date"], 
+    r["spot_price"], r["amount"], r["price"], r["shipping"], r["total"], r["oz"], r["name"],
+                r["status"], r["sold_value"], r["seller"], r["method"]
   end
   def input(id)
     table_name = get_options(id)
@@ -293,7 +300,7 @@ class Inventory < Sql
     end
   methods_array
   end
-  def update_own(row_id, id)
+  def update_own(row_id, id, website: false, sold_price: 0)
     # gets type of silver via id
     table = get_options(id) 
     @db.execute("select status from #{table} where id = '#{row_id}';").each do |row|
@@ -308,10 +315,20 @@ class Inventory < Sql
         Logger.info("Updated #{table} changed row: #{row_id} status to own")
       end
       #next unless row.eql?('own')
-      if id.to_i <= 3
+      # make sure if the id is less than or equal to 3
+      # and the website variable should be equal to false. 
+      # which by default it is set to.
+      if id.to_i <= 3 && website.eql?(false)
         print('Enter amount sold for: ')
         sold_price = gets.chomp
         # make sure input is a number. 
+        if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/) 
+          @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
+          Logger.info("Updated #{table} changed row: #{row_id} with #{sold_price}")
+        end
+      # if the website variable is set to true it will not
+      # print the text to be updated, it will use the sold_price variable
+      elsif website.eql?(true)
         if sold_price.match?(/\A[+-]?\d+(\.\d+)?\z/) 
           @db.execute("UPDATE #{table} SET sold_value = '#{sold_price}' WHERE id='#{row_id}';")
           Logger.info("Updated #{table} changed row: #{row_id} with #{sold_price}")
