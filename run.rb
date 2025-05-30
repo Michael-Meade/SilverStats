@@ -5,6 +5,7 @@ require_relative 'test2'
 require 'CryptoPriceFinder'
 require 'json'
 require 'dotenv'
+require 'gruff'
 
 Dotenv.load('local.env')
 
@@ -39,6 +40,9 @@ post '/enter_bullion' do
   # 3: bullion
   i.input_site(3, params)
   erb :index
+end
+get '/test' do  
+	erb :test
 end
 post '/status' do
   inv = Inventory.new
