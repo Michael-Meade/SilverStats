@@ -34,3 +34,34 @@ get how much the amount of silver is worth in USD. <Br>
 ## Back Up DB
 This will back up the db by saving a copy of it with a new name. <br>
 ![BackUp DB](images/backup_db.png)
+
+### WEBSITE
+
+## Change Status
+The status can either be `sold` or `own`. By entering the row ID it will automatically change the status via the current status. Like for example,
+if the status is `sold` it will change to `own` and if it set to `own` it will change to `sold`.
+![Change status](images/change_status.png)
+
+## Delete Row
+
+This page will display a nice html table that includes the row id. The user will
+enter the row id which will delete the row. 
+![Deleting row](images/delete_row.png)
+
+## Entering Silver
+The enter silver page has three buttons, one to change status, delete a certain row and enter silver.
+![Entering Silver](images/enter_silver.png)
+
+
+## Pie Charts
+Shows the percentage of different types of sivler and cryptocurrency. 
+![Pie charts showing the types of silver](images/pie_charts.png)
+
+## Cryptocurrency table
+Reads from JSON file. Can be set by using `EXPORT=stats2.json`
+![crypto table](images/crypto.png)
+
+
+## Silver Stats
+Shows a nice table with the different types of silver amount in OZ and the amount in USD. 
+![silver status](images/silver_stats.png)

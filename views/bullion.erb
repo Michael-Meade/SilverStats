@@ -15,6 +15,8 @@
       <h1>
         Enter bullion Silver
         <br><br>
+        <%=  request.form_data? %>
+
         <form action="/enter_bullion" method="post">
           <label for="bought_date">Bought Date:</label><br>
           <input type="date" id="bought_date" name="bought_date" required="required"><br>
@@ -106,19 +108,23 @@
             <option value="Golden State Mint">
           </datalist><br>
           <input type="submit" value="Submit">
-        </form>
-      </center>
-      </h1>
-      <center>
-        <h1>Change Status</h1>
+        </form><br><br>
+
         <form action="/status" method="post">
           <label for="change_status">Row ID:</label><br>
           <input type="number" id="status_bullion" name="status_bullion" required="required" value="1"><br>
           <label for="change_status">Sold Price:</label><br>
           <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
           <input type="submit" value="Submit">
+        </form><br><br>
+
+        <form action="/delete_row" method="post">
+          <label for="delete_row">Delete Row:</label><br>
+          <input type="number" id="delete_bullion" name="delete_bullion" required="required" value="1"><br>
+          <input type="submit" value="Submit">  
         </form>
       </center>
+      </h1>
     </center>
   </body>
 </html>

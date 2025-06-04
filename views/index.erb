@@ -21,15 +21,32 @@
       .tabs [id^="tab"]:checked + label { background-color: red; color: #fff; }
       .tabs [id^="tab"]:checked ~ [id^="tab-panel"] { display: block; }
       img { width: 25%; height: auto; }
+      .button {
+        background-color: #04AA6D; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+      .button1 {background-color: #04AA6D;} /* Green */
+      .button2 {background-color: #008CBA;} /* Blue */
+      .button3 {background-color: #f44336;} /* Red */
+      .button4 {background-color: #e7e7e7; color: black;} /* Gray */
+      .button5 {background-color: #555555;} /* Black */
     </style>
   </head>
   <body>
     
     <body style="background-color: #121212;">
     <font color="yellow">
-      <h1><center>Silver Stats</center></h1>
+      <center><h1>Silver Stats</h1></center>
       <% @silver = Inventory.new %>
-
+ 
       <center>
       <% 
         bar     = @silver.select_total_oz(1) # 1: Bar
@@ -498,12 +515,20 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                                                                                                                  
                 </pre></font>
                 <br><br>
-                <h1>Bars</h1>
-                <button onclick="document.location='/bar'">Bar</button>&nbsp&nbsp<button onclick="document.location='/bar'">Change Status</button><br><br>
-                <h1>Junk</h1>
-                <button onclick="document.location='/junk'">Junk</button>&nbsp&nbsp<button onclick="document.location='/junk'">Change Status</button><br><br>
-                <h1>Bullion</h1>
-                <button onclick="document.location='/bullion'">Bullion</button>&nbsp&nbsp<button onclick="document.location='/bullion'">Change Status</button><br><br>
+                
+                <center>
+                  <h1>Bars</h1>
+                  <button class="button button2" onclick="document.location='/bar'">Bar</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_bar'">Change Status</button>&nbsp&nbsp
+                  <button class="button button3" onclick="document.location='/delete_bar'">Delete Row</button><br><br>
+                  <h1>Junk</h1>
+                  <button class="button button2" onclick="document.location='/junk'">Junk</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_junk'">Change Status</button>&nbsp&nbsp
+                  <button class="button button3" onclick="document.location='/delete_junk'">Delete Row</button><br><br>
+                  <h1>Bullion</h1>
+                  <button class="button button2" onclick="document.location='/bullion'">Bullion</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_bullion'">Change Status</button>&nbsp&nbsp
+                  <button class="button button3" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
               </center>
             </div>
           </li>

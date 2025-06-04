@@ -1,0 +1,88 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+    <body style="background-color: #121212;">
+      <pre><font color="red"><center>
+
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+DDDDDDDDDDDDD                           lllllll                              tttt                                             JJJJJJJJJJJ                                kkkkkkkk           
+D::::::::::::DDD                        l:::::l                           ttt:::t                                             J:::::::::J                                k::::::k           
+D:::::::::::::::DD                      l:::::l                           t:::::t                                             J:::::::::J                                k::::::k           
+DDD:::::DDDDD:::::D                     l:::::l                           t:::::t                                             JJ:::::::JJ                                k::::::k           
+  D:::::D    D:::::D     eeeeeeeeeeee    l::::l     eeeeeeeeeeee    ttttttt:::::ttttttt        eeeeeeeeeeee                     J:::::Juuuuuu    uuuuuunnnn  nnnnnnnn     k:::::k    kkkkkkk
+  D:::::D     D:::::D  ee::::::::::::ee  l::::l   ee::::::::::::ee  t:::::::::::::::::t      ee::::::::::::ee                   J:::::Ju::::u    u::::un:::nn::::::::nn   k:::::k   k:::::k 
+  D:::::D     D:::::D e::::::eeeee:::::eel::::l  e::::::eeeee:::::eet:::::::::::::::::t     e::::::eeeee:::::ee                 J:::::Ju::::u    u::::un::::::::::::::nn  k:::::k  k:::::k  
+  D:::::D     D:::::De::::::e     e:::::el::::l e::::::e     e:::::etttttt:::::::tttttt    e::::::e     e:::::e                 J:::::ju::::u    u::::unn:::::::::::::::n k:::::k k:::::k   
+  D:::::D     D:::::De:::::::eeeee::::::el::::l e:::::::eeeee::::::e      t:::::t          e:::::::eeeee::::::e                 J:::::Ju::::u    u::::u  n:::::nnnn:::::n k::::::k:::::k    
+  D:::::D     D:::::De:::::::::::::::::e l::::l e:::::::::::::::::e       t:::::t          e:::::::::::::::::e      JJJJJJJ     J:::::Ju::::u    u::::u  n::::n    n::::n k:::::::::::k     
+  D:::::D     D:::::De::::::eeeeeeeeeee  l::::l e::::::eeeeeeeeeee        t:::::t          e::::::eeeeeeeeeee       J:::::J     J:::::Ju::::u    u::::u  n::::n    n::::n k:::::::::::k     
+  D:::::D    D:::::D e:::::::e           l::::l e:::::::e                 t:::::t    tttttte:::::::e                J::::::J   J::::::Ju:::::uuuu:::::u  n::::n    n::::n k::::::k:::::k    
+DDD:::::DDDDD:::::D  e::::::::e         l::::::le::::::::e                t::::::tttt:::::te::::::::e               J:::::::JJJ:::::::Ju:::::::::::::::uun::::n    n::::nk::::::k k:::::k   
+D:::::::::::::::DD    e::::::::eeeeeeee l::::::l e::::::::eeeeeeee        tt::::::::::::::t e::::::::eeeeeeee        JJ:::::::::::::JJ  u:::::::::::::::un::::n    n::::nk::::::k  k:::::k  
+D::::::::::::DDD       ee:::::::::::::e l::::::l  ee:::::::::::::e          tt:::::::::::tt  ee:::::::::::::e          JJ:::::::::JJ     uu::::::::uu:::un::::n    n::::nk::::::k   k:::::k 
+DDDDDDDDDDDDD            eeeeeeeeeeeeee llllllll    eeeeeeeeeeeeee            ttttttttttt      eeeeeeeeeeeeee            JJJJJJJJJ         uuuuuuuu  uuuunnnnnn    nnnnnnkkkkkkkk    kkkkkkk
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+
+      </pre></font></center>
+	    <font color="yellow">
+	    	<center>
+	    		<% @silver = Inventory.new %>
+		      <h1>
+		      	<table style="width:50%" border="1" align="center">
+              <tr>
+                <th>ID</th>
+                <th>Bought Date</th>
+                <th>Spot Price</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Shipping</th>
+                <th>Total</th>
+                <th>OZ</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Sold Value</th>
+                <th>Seller</th>
+                <th>Method</th>
+              </tr>
+              <% junk =  @silver.select(2, html_table: true) %>
+              <% junk.each do |i| %>
+              <tr>
+                <td><font color="white"><%= i[0] %></font></td>
+                <td><font color="white"><%= i[1] %></font></td>
+                <td><font color="white"><%= i[2] %></font></td>
+                <td><font color="white"><%= i[3] %></font></td>
+                <td><font color="white"><%= i[4] %></font></td>
+                <td><font color="white"><%= i[5] %></font></td>
+                <td><font color="white"><%= i[6] %></font></td>
+                <td><font color="white"><%= i[7] %></font></td>
+                <td><font color="white"><%= i[8] %></font></td>
+                <td><font color="white"><%= i[9] %></font></td>
+                <td><font color="white"><%= i[10] %></font></td>
+                <td><font color="white"><%= i[11] %></font></td>
+                <td><font color="white"><%= i[12] %></font></td>
+              </tr>
+              <% end %>
+            </table>
+		      	<form action="/delete_row" method="post">
+          		<label for="delete_row">Delete Row:</label><br>
+          		<input type="number" id="delete_junk" name="delete_junk" required="required" value="row_id"><br>
+          		<input type="submit" value="Submit">  
+          	</form>
+		      </h1>
+		    </center>
+		</font>
+	</body>
+</html>

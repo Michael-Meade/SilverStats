@@ -8,7 +8,8 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test2.db'
+    @db = SQLite3::Database.new 'test_db.db'
+
     # 'test2.db'
     # test2.db
     # 'test2.db'
@@ -405,6 +406,7 @@ class Inventory < Sql
     Logger.info("Deleting the row with row_id: #{row_id} on the #{table} table")
     begin
       # Deletes the row by the given 'row_id'
+      p row_id
       @db.execute("delete from #{table} where id ='#{row_id}';")
       Logger.info("Deleted row, #{row_id} from the #{table} table.")
     rescue StandardError => e

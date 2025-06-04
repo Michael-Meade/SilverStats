@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+  <body style="background-color: #121212;">
+    <pre><font color="yellow"><center>
+
+                                                                                                                                                                                                                                                                                                                               
+  
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+   SSSSSSSSSSSSSSS      tttt                                    tttt                                                  BBBBBBBBBBBBBBBBB                     lllllll lllllll   iiii                                     
+ SS:::::::::::::::S  ttt:::t                                 ttt:::t                                                  B::::::::::::::::B                    l:::::l l:::::l  i::::i                                    
+S:::::SSSSSS::::::S  t:::::t                                 t:::::t                                                  B::::::BBBBBB:::::B                   l:::::l l:::::l   iiii                                     
+S:::::S     SSSSSSS  t:::::t                                 t:::::t                                                  BB:::::B     B:::::B                  l:::::l l:::::l                                            
+S:::::S        ttttttt:::::ttttttt      aaaaaaaaaaaaa  ttttttt:::::ttttttt    uuuuuu    uuuuuu      ssssssssss          B::::B     B:::::Buuuuuu    uuuuuu   l::::l  l::::l iiiiiii    ooooooooooo   nnnn  nnnnnnnn    
+S:::::S        t:::::::::::::::::t      a::::::::::::a t:::::::::::::::::t    u::::u    u::::u    ss::::::::::s         B::::B     B:::::Bu::::u    u::::u   l::::l  l::::l i:::::i  oo:::::::::::oo n:::nn::::::::nn  
+ S::::SSSS     t:::::::::::::::::t      aaaaaaaaa:::::at:::::::::::::::::t    u::::u    u::::u  ss:::::::::::::s        B::::BBBBBB:::::B u::::u    u::::u   l::::l  l::::l  i::::i o:::::::::::::::on::::::::::::::nn 
+  SS::::::SSSSStttttt:::::::tttttt               a::::atttttt:::::::tttttt    u::::u    u::::u  s::::::ssss:::::s       B:::::::::::::BB  u::::u    u::::u   l::::l  l::::l  i::::i o:::::ooooo:::::onn:::::::::::::::n
+    SSS::::::::SS    t:::::t              aaaaaaa:::::a      t:::::t          u::::u    u::::u   s:::::s  ssssss        B::::BBBBBB:::::B u::::u    u::::u   l::::l  l::::l  i::::i o::::o     o::::o  n:::::nnnn:::::n
+       SSSSSS::::S   t:::::t            aa::::::::::::a      t:::::t          u::::u    u::::u     s::::::s             B::::B     B:::::Bu::::u    u::::u   l::::l  l::::l  i::::i o::::o     o::::o  n::::n    n::::n
+            S:::::S  t:::::t           a::::aaaa::::::a      t:::::t          u::::u    u::::u        s::::::s          B::::B     B:::::Bu::::u    u::::u   l::::l  l::::l  i::::i o::::o     o::::o  n::::n    n::::n
+            S:::::S  t:::::t    tttttta::::a    a:::::a      t:::::t    ttttttu:::::uuuu:::::u  ssssss   s:::::s        B::::B     B:::::Bu:::::uuuu:::::u   l::::l  l::::l  i::::i o::::o     o::::o  n::::n    n::::n
+SSSSSSS     S:::::S  t::::::tttt:::::ta::::a    a:::::a      t::::::tttt:::::tu:::::::::::::::uus:::::ssss::::::s     BB:::::BBBBBB::::::Bu:::::::::::::::uul::::::ll::::::li::::::io:::::ooooo:::::o  n::::n    n::::n
+S::::::SSSSSS:::::S  tt::::::::::::::ta:::::aaaa::::::a      tt::::::::::::::t u:::::::::::::::us::::::::::::::s      B:::::::::::::::::B  u:::::::::::::::ul::::::ll::::::li::::::io:::::::::::::::o  n::::n    n::::n
+S:::::::::::::::SS     tt:::::::::::tt a::::::::::aa:::a       tt:::::::::::tt  uu::::::::uu:::u s:::::::::::ss       B::::::::::::::::B    uu::::::::uu:::ul::::::ll::::::li::::::i oo:::::::::::oo   n::::n    n::::n
+ SSSSSSSSSSSSSSS         ttttttttttt    aaaaaaaaaa  aaaa         ttttttttttt      uuuuuuuu  uuuu  sssssssssss         BBBBBBBBBBBBBBBBB       uuuuuuuu  uuuulllllllllllllllliiiiiiii   ooooooooooo     nnnnnn    nnnnnn
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                                                                       
+                                                                                                                                                                     
+
+    </pre></font></center>
+    <font color="yellow">
+      <center>
+        <% @silver = Inventory.new %>
+        <h1>
+          <table style="width:50%" border="1" align="center">
+            <tr>
+              <th>ID</th>
+              <th>Bought Date</th>
+              <th>Spot Price</th>
+              <th>Amount</th>
+              <th>Price</th>
+              <th>Shipping</th>
+              <th>Total</th>
+              <th>OZ</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Sold Value</th>
+              <th>Seller</th>
+              <th>Method</th>
+            </tr>
+            <% bull =  @silver.select(3, html_table: true) %>
+            <% bull.each do |i| %>
+            <tr>
+              <td><font color="white"><%= i[0] %></font></td>
+              <td><font color="white"><%= i[1] %></font></td>
+              <td><font color="white"><%= i[2] %></font></td>
+              <td><font color="white"><%= i[3] %></font></td>
+              <td><font color="white"><%= i[4] %></font></td>
+              <td><font color="white"><%= i[5] %></font></td>
+              <td><font color="white"><%= i[6] %></font></td>
+              <td><font color="white"><%= i[7] %></font></td>
+              <td><font color="white"><%= i[8] %></font></td>
+              <td><font color="white"><%= i[9] %></font></td>
+              <td><font color="white"><%= i[10] %></font></td>
+              <td><font color="white"><%= i[11] %></font></td>
+              <td><font color="white"><%= i[12] %></font></td>
+            </tr>
+            <% end %>
+          </table>
+          <form action="/status" method="post">
+            <label for="change_status">Change Status:</label><br>
+            <input type="number" id="status_bar" name="status_bullion" required="required" value="1"><br>
+            <label for="change_status">Sold Price:</label><br>
+            <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
+            <input type="submit" value="Submit">
+        </form><br><br>
+        </h1>
+      </center>
+    </font>
+  </body>
+</html>

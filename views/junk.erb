@@ -146,17 +146,20 @@
             <option value="nh expo">
             <option value="Golden State Mint">
           </datalist><br>
-          <input type="submit" value="Submit">
+          <input type="submit" value="Submit"><br><br>
         </form>
-      </center>
-      <center>
-        <h1>Change Status</h1>
-        <form action="/status" method="post">
+        <form>
+          <form action="/status" method="post">
           <label for="change_status">Row ID:</label><br>
           <input type="number" id="status_junk" name="status_junk" required="required" value="1"><br>
           <label for="change_status">Sold Price:</label><br>
           <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
           <input type="submit" value="Submit">
+        </form><br><br>
+        <form action="/delete_row" method="post">
+          <label for="delete_row">Delete Row:</label><br>
+          <input type="number" id="delete_bullion" name="delete_bullion" required="required" value="1"><br>
+          <input type="submit" value="Submit">  
         </form>
       </center>
     </h1>

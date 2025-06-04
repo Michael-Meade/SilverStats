@@ -24,6 +24,7 @@ post '/enter_bar' do
   erb :index
 end
 get '/junk' do
+	p request.form_data?
   erb :junk
 end
 post '/enter_junk' do
@@ -34,6 +35,25 @@ post '/enter_junk' do
 end
 get '/bullion' do
   erb :bullion
+end
+
+get '/delete_bullion' do 
+	erb :delete_bullion
+end
+get '/delete_junk' do 
+	erb :delete_junk
+end
+get '/delete_bar' do 
+	erb :delete_bar
+end
+get '/status_bar' do
+	erb :status_bar
+end
+get '/status_bullion' do
+	erb :status_bullion
+end
+get '/status_junk' do
+	erb :status_junk
 end
 post '/enter_bullion' do
   i = Inventory.new
@@ -64,4 +84,17 @@ post '/status' do
     inv.update_own(row_id, 3, website: true, sold_price: params['sold_price'].to_s)
   end
   erb :index
+end
+post '/delete_row' do
+	inv = Inventory.new
+	row_id = params.keys.shift
+	case row_id.to_s
+	when "delete_bar"
+		inv.delete_row(params["delete_bar"], 1)
+	when "delete_junk"
+		inv.delete_row(params["delete_junk"], 2)
+	when "delete_bullion"
+		inv.delete_row(params["delete_bullion"], 3)
+	end
+	erb :index
 end
