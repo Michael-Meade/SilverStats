@@ -559,7 +559,6 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 pie_crypto = [["Monero", xmr.to_s], ["Stellar", xlm.to_s], ["Bitcoin", btc.to_s]]
                 g1 = Gruff::Pie.new
                 g1.title = 'CryptoCurrency Pie Chart'
-                g1.title = 'Silver Pie Chart'
                 pie_crypto.each do |data|
                   g1.data(data[0], data[1].to_i)
                 end
