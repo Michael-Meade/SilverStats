@@ -5,5 +5,5 @@ logs.txt
 line.rb
 line2.rb
 *.json
-crypto_pie.png
-silver_pie.png
+images/crypto_pie.png
+images/silver_pie.png
