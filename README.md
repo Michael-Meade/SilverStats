@@ -55,7 +55,7 @@ The enter silver page has three buttons, one to change status, delete a certain 
 
 ## Pie Charts
 Shows the percentage of different types of sivler and cryptocurrency. 
-![Pie charts showing the types of silver](images/pie_charts.png)
+![Pie charts showing the types of silver](images/pie_chart.png)
 
 ## Cryptocurrency table
 Reads from JSON file. Can be set by using `EXPORT=stats2.json`
