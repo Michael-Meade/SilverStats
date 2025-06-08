@@ -24,7 +24,6 @@ post '/enter_bar' do
   erb :index
 end
 get '/junk' do
-	p request.form_data?
   erb :junk
 end
 post '/enter_junk' do

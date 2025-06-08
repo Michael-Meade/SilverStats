@@ -15,14 +15,13 @@
       <h1>
         Enter bullion Silver
         <br><br>
-        <%=  request.form_data? %>
 
         <form action="/enter_bullion" method="post">
           <label for="bought_date">Bought Date:</label><br>
           <input type="date" id="bought_date" name="bought_date" required="required"><br>
 
           <label for="spot_price">Spot Price:</label><br>
-          <input type="number" id="spot_price" name="spot_price" required="required" value="0.00"><br>
+          <input type="number" id="spot_price" name="spot_price" step="0.01" required="required" value="0.00"><br>
 
           <label for="amount">Amount ( count ):</label><br>
           <input list="bullion-silver-amount" id="amount" name="amount" required="required" />
@@ -41,13 +40,13 @@
           </datalist><br>
           
           <label for="price">Price:</label><br>
-          <input type="number" id="price" name="price" required="required" value=""><br>
+          <input type="number" id="price" name="price" step="0.01" required="required" value=""><br>
 
           <label for="shipping">Shipping:</label><br>
-          <input type="number" id="shipping" name="shipping" required="required" value="0.00"><br>
+          <input type="number" id="shipping" name="shipping" step="0.01" required="required" value="0.00"><br>
 
           <label for="total">Total $:</label><br>
-          <input type="number" id="total" name="total" required="required" value="0.00"><br>
+          <input type="number" id="total" name="total" step="0.01" required="required" value="0.00"><br>
 
           <label for="oz">OZ:</label><br>
           <input list="bullion-silver-oz" id="oz" name="oz" />
@@ -118,11 +117,7 @@
           <input type="submit" value="Submit">
         </form><br><br>
 
-        <form action="/delete_row" method="post">
-          <label for="delete_row">Delete Row:</label><br>
-          <input type="number" id="delete_bullion" name="delete_bullion" required="required" value="1"><br>
-          <input type="submit" value="Submit">  
-        </form>
+        
       </center>
       </h1>
     </center>
