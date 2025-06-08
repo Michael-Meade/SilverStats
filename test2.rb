@@ -8,7 +8,7 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new ENV['DB']
+    @db = SQLite3::Database.new ENV['DB'].to_s
     #'test2.db'
 
     # 'test2.db'
