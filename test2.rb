@@ -201,7 +201,18 @@ class Inventory < Sql
     @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
     Logger.info("Entered #{cash_amount} from #{from}")
   end
-
+  def spot_avg(id)
+    table     = get_options(id)
+    avg_total = 0
+    count     = 0
+    @db.execute("select spot_price from #{table};").each do |row|
+      row = row.shift
+      avg_total += row
+      count += 1
+    end
+    avg = avg_total / count
+  return [ avg, count ]
+  end
   def select_price_avg(id, html_table: false)
     count = 0
     total = 0
