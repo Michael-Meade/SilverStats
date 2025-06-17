@@ -26,6 +26,61 @@ end
 get '/junk' do
   erb :junk
 end
+post '/enter_crypto' do
+  file_read   = File.read(ENV['CRYPTO'])
+  json        = JSON.parse(file_read)
+  crypto_type = params["crypto_type"]
+  new_amount  = params["new_amount"]
+  case crypto_type.to_s
+  when "Bitcoin"
+    if params["crypto_action"].eql?("Add")
+      btc_amount = json[crypto_type.downcase]
+      final  = btc_amount.to_f + new_amount.to_f
+      json["bitcoin"] = final
+      File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+    elsif params["crypto_action"].eql?("Subtract")
+      btc_amount = json[crypto_type.downcase]
+      if btc_amount >= new_amount.to_i
+        final  = btc_amount.to_f - new_amount.to_f
+        json["bitcoin"] = final
+        File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+      end
+    end
+  when "Monero"
+    if params["crypto_action"].eql?("Add")
+      xmr_amount = json[crypto_type.downcase]
+      final  = xmr_amount.to_f + new_amount.to_f
+      json["monero"] = final
+      p json
+      File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+    elsif params["crypto_action"].eql?("Subtract")
+      xmr_amount = json[crypto_type.downcase]
+      if xmr_amount >= new_amount.to_i
+        final  = xmr_amount.to_f - new_amount.to_f
+        json["monero"] = final
+        File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+      end
+    end
+  when "Stellar"
+    if params["crypto_action"].eql?("Add")
+      xlm_amount = json[crypto_type.downcase]
+      final  = xlm_amount.to_f + new_amount.to_f
+      json["stellar"] = final
+      File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+    elsif params["crypto_action"].eql?("Subtract")
+      xlm_amount = json[crypto_type.downcase]
+      if xlm_amount >= new_amount.to_i
+        final  = xlm_amount.to_f - new_amount.to_f
+        json["stellar"] = final
+        File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+      end
+    end
+  end
+  erb :index
+end
+get '/crypto' do
+  erb :crypto
+end
 post '/enter_junk' do
   i = Inventory.new
   # 2: junk
