@@ -26,6 +26,14 @@ end
 get '/junk' do
   erb :junk
 end
+post '/enter_cash' do
+  i = Inventory.new
+  i.input_cash(params, html: true)
+  erb :index
+end
+get '/cash' do
+  erb :cash
+end
 post '/enter_crypto' do
   file_read   = File.read(ENV['CRYPTO'])
   json        = JSON.parse(file_read)

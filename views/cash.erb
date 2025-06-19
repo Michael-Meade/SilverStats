@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+  <body>
+    
+    <body style="background-color: #121212;">
+    <font color="yellow">
+      <center>
+      <h1>
+        <pre>
+
+███████ ███    ██ ████████ ███████ ██████       ██████  █████  ███████ ██   ██ 
+██      ████   ██    ██    ██      ██   ██     ██      ██   ██ ██      ██   ██ 
+█████   ██ ██  ██    ██    █████   ██████      ██      ███████ ███████ ███████ 
+██      ██  ██ ██    ██    ██      ██   ██     ██      ██   ██      ██ ██   ██ 
+███████ ██   ████    ██    ███████ ██   ██      ██████ ██   ██ ███████ ██   ██ 
+                                                                                                     
+        </pre>
+        <br>
+        <form action="/enter_cash" method="post">
+         <label for="cash_amount">Cash Amount</label><br>
+          <input type="number" id="cash_amount" name="cash_amount" step="0.01" required="required" value=""><br>
+          <label for="cash_from">From</label><br>
+          <input type="text" id="cash_from" name="cash_from" required="required" value=""><br>
+          <input type="submit" value="Submit">
+        </form>
+      </center>
+    </h1>
+  </body>
+</html>

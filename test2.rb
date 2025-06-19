@@ -193,13 +193,21 @@ class Inventory < Sql
     Logger.info("Insert into table #{table_name} -\n\n\n bought_date: #{r[0]} \n spot price: #{r[1]} \n Amount: #{r[2]} \n Price: #{r[3]} \n Shipping: #{r[4]} \n Total: #{r[5]} \n OZ: #{r[6]} \n Name: #{r[7]} \n Status: #{r[8]} \n Sold value: #{r[9]} \n Seller: #{r[10]} \n Method: #{r[11]}")
   end
 
-  def input_cash
-    print('Enter amount of Cash: ')
-    cash_amount = gets.chomp
-    print('Enter from who: ')
-    from = gets.chomp
-    @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
-    Logger.info("Entered #{cash_amount} from #{from}")
+  def input_cash(data, html: false)
+    if html.eql?(false)
+      print('Enter amount of Cash: ')
+      cash_amount = gets.chomp
+      print('Enter from who: ')
+      from = gets.chomp
+      @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
+      Logger.info("Entered #{cash_amount} from #{from}")
+    else
+      cash_amount = data["cash_amount"]
+      from        = data["cash_from"]
+      puts "CASH #{cash_amount}"
+      @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
+      Logger.info("Entered #{cash_amount} from #{from}")
+    end
   end
   def spot_avg(id)
     table     = get_options(id)

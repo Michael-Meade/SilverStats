@@ -582,11 +582,11 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <button class="button button3" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
                   <h1>Crypto</h1>
                   <button class="button button2" onclick="document.location='/crypto'">Crypto</button>&nbsp&nbsp
-                  <!-- 
-                  <button class="button" onclick="document.location='/status_bullion'">Change Status</button>&nbsp&nbsp
+                  <h1>Cash</h1>
+                  <button class="button button2" onclick="document.location='/cash'">Cash</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_cash'">Change Status</button>&nbsp&nbsp
                   <button class="button button3" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
-                  -->
-              </center>
+                </center>
             </div>
           </li>
           <li>
@@ -627,14 +627,32 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               <img src="crypto_pie.png" width="460" height="345">
             </div>
           </li>
-        <!--
-        <li>
-          <input id="tab7" type="radio" name="tabs" />
-          <label for="tab7">Enter Silver</label>
-          <div id="tab-pane17" class="tab-panel">
-          </div>
-        </li>
-        -->
+          <li>
+            <input id="tab7" type="radio" name="tabs" />
+            <label for="tab7">Cash</label>
+            <div id="tab-panel7" class="tab-panel">
+              <br><br>
+              <% cash =  @silver.select(4) %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>ID</th>
+                  <th>Amount USD</th>
+                  <th>From</th>
+                  <th>Status</th>
+                  <th>Current Amount</th>
+                </tr>
+                <% cash.each do |c| %>
+                <tr>
+                  <td><font color="white"><%= c[0] %></font></td>
+                  <td><font color="#1CE815">$<%= c[1] %></font></td>
+                  <td><font color="#1CE815"><%= c[2] %></font></td>
+                  <td><font color="#1CE815"><%= c[3] %></font></td>
+                  <td><font color="#1CE815"><%= c[4] %></font></td>
+                </tr>
+                <% end %>
+              </table>
+            </div>
+          </li>
       </ul>
     </center>
   </body>
