@@ -316,7 +316,8 @@
                 </tr>
               </table>
               <br><br>
-              <h1><center>Franklin Half Dollars</center></h1> 
+              <h1><center>Franklin Half Dollars</center></h1>
+              <% Silver.franklins(html_table: true) %> 
               <table style="width:50%" border="1" align="center">
                 <tr>
                   <th>Franklin Half Dollars Count</th>
@@ -324,6 +325,7 @@
                   <th>Silver Amound in USD</th>
                 </tr>
                 <tr>
+
                   <td><font color="white"><%= Silver.franklins(html_table: true)[0] %></font></td>
                   <td><font color="white"><%= Silver.franklins(html_table: true)[1] %> OZ</font></td>
                   <td><font color="#1CE815">$<%= Silver.get_silver_price(Silver.franklins(html_table: true)[1]).round(2) %></font></td>
@@ -585,7 +587,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <h1>Cash</h1>
                   <button class="button button2" onclick="document.location='/cash'">Cash</button>&nbsp&nbsp
                   <button class="button" onclick="document.location='/status_cash'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
+                  <button class="button button3" onclick="document.location='/delete_cash'">Delete Row</button><br><br>
                 </center>
             </div>
           </li>
@@ -614,7 +616,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
                 btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
                 pie_crypto = [["Monero", xmr.to_s], ["Stellar", xlm.to_s], ["Bitcoin", btc.to_s]]
-                g1 = Gruff::Pie.new
+                g1 = Gruff::Pie.new('800x400')
                 g1.title = 'CryptoCurrency Pie Chart'
                 pie_crypto.each do |data|
                   g1.data(data[0], data[1].to_i)
@@ -625,6 +627,37 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               <img src="silver_pie.png" width="460" height="345"><br><br>
               <h1>CryptoCurrency Pie Chart</h1>
               <img src="crypto_pie.png" width="460" height="345">
+
+              <h1></h1>
+              <%
+                silver = Inventory.new
+                pre_names = [] 
+                silver.select_method(1, html_table: false).each { |info| pre_names << info }
+
+                silver.select_method(2, html_table: false).each { |info| pre_names << info }
+
+                silver.select_method(3, html_table: false).each { |info| pre_names << info }
+
+                names = {}
+                i = 0
+                pre_names.each do |name, count|
+                  if !names.key?(name)
+                    names[name] = count
+                  else
+                    names[name] +=  count
+                  end
+                end
+                g2 = Gruff::Bar.new
+                g2.show_labels_for_bar_values = true
+                #g2.replace_colors = (["#FF0000", "#E2001C", "#C60038", "#AA0055", "#8D0071", "#71008D", "#5500AA", "#3800C6", "#1C00E2", "#0000FF"])
+                g2.title = 'Purchase'
+                g2.sort = true
+                names.to_a.each do |data|
+                  g2.data(data[0], data[1].to_i, "#" + SecureRandom.hex(3))
+                end
+                g2.write(File.join("public", "purchase.png"))
+              %> 
+              <img src="purchase.png" width="460" height="345">
             </div>
           </li>
           <li>
@@ -632,7 +665,8 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
             <label for="tab7">Cash</label>
             <div id="tab-panel7" class="tab-panel">
               <br><br>
-              <% cash =  @silver.select(4) %>
+              <% total = 0 %>
+              <% cash =  @silver.select(4, html_table: true) %>
               <table style="width:50%" border="1" align="center">
                 <tr>
                   <th>ID</th>
@@ -643,13 +677,60 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 </tr>
                 <% cash.each do |c| %>
                 <tr>
-                  <td><font color="white"><%= c[0] %></font></td>
-                  <td><font color="#1CE815">$<%= c[1] %></font></td>
+                  <td><font color="white">  <%= c[0] %></font></td>
+                  <td><font color="#1CE815"><%= c[1] %></font></td>
                   <td><font color="#1CE815"><%= c[2] %></font></td>
                   <td><font color="#1CE815"><%= c[3] %></font></td>
                   <td><font color="#1CE815"><%= c[4] %></font></td>
                 </tr>
+                <% total += c[4] %>
                 <% end %>
+              </table><br><br><br>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Cash Amount</th>
+                </tr>
+                <tr>
+                  <td><font color="#1CE815">$<%= total %></font></td>
+                </tr>
+              </table>
+            </div>
+          </li>
+          <li>
+            <input id="tab8" type="radio" name="tabs" />
+            <label for="tab8">Total</label>
+            <div id="tab-panel8" class="tab-panel">
+              <br><br>
+              <%
+                cash_total = 0
+                @silver.select(4, html_table: true).each do |c|
+                  cash_total += c[4]
+                end
+                bar     = @silver.select_total_oz(1) # 1: Bar
+                junk    = @silver.select_total_oz(2) # 2: Junk
+                bullion = @silver.select_total_oz(3) # 3: Bullion
+                total          = bar + junk + bullion
+                silver_total     = Silver.get_silver_price(total).round(2)
+
+                xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s  
+                xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
+                btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
+                crypto_total = xmr.to_i + xlm.to_i + btc.to_i
+                final_total = cash_total.to_i + silver_total.to_i + crypto_total.to_i
+              %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Silver Amount USD</th>
+                  <th>Cash Amount      </th>
+                  <th>Crypto Amount USD</th>
+                  <th>TOTAL            </th>
+                </tr>
+                <tr>
+                  <td>$<%= silver_total %></td>
+                  <td>$<%= cash_total   %></td>
+                  <td>$<%= crypto_total %></td>
+                  <td>$<%= final_total  %></td>
+                </tr>
               </table>
             </div>
           </li>

@@ -65,3 +65,13 @@ Reads from JSON file. Can be set by using `EXPORT=stats2.json`
 ## Silver Stats
 Shows a nice table with the different types of silver amount in OZ and the amount in USD. 
 ![silver status](images/silver_stats.png)
+
+## Running the website
+
+```ruby
+	ruby run.rb
+```
+
+There are two crypto json files, `prod.json` and `dev.json`. There will be a text in the crypto tag with the color red if 
+`dev.json` is being used. If the `prod.json` is active it will show green text.
+

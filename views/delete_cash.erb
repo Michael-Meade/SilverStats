@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+  <body style="background-color: #121212;">
+    <font color="yellow">
+    	<center><pre>
+        <div id="tab-panel7" class="tab-panel">
+          <br><br>
+
+          <% 
+            i    = Inventory.new
+            cash =  i.select(4, html_table: true)
+          %>
+          <table style="width:50%" border="1" align="center">
+            <tr>
+              <th>ID</th>
+              <th>Amount USD</th>
+              <th>From</th>
+              <th>Status</th>
+              <th>Current Amount</th>
+            </tr>
+            <% cash.each do |c| %>
+            <tr>
+              <td><font color="white">  <%= c[0] %></font></td>
+              <td><font color="#1CE815"><%= c[1] %></font></td>
+              <td><font color="#1CE815"><%= c[2] %></font></td>
+              <td><font color="#1CE815"><%= c[3] %></font></td>
+              <td><font color="#1CE815"><%= c[4] %></font></td>
+            </tr>
+            <% end %>
+          </table>
+        </div>
+        <br><br>
+        <form action="/delete_row" method="post">
+          <label for="delete_row">Delete Row:</label><br>
+          <input type="number" id="delete_cash" name="delete_cash" required="required" value="row_id"><br>
+          <input type="submit" value="Submit">  
+        </form>
+      </pre></center>
+    </font>
+  </body>
+</html>

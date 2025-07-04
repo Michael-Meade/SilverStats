@@ -8,7 +8,7 @@ require 'httparty'
 require 'logger'
 class Sql
   def initialize
-    @db = SQLite3::Database.new ENV['DB'].to_s
+    @db = SQLite3::Database.new 'test2.db'
     #'test2.db'
 
     # 'test2.db'
@@ -202,10 +202,10 @@ class Inventory < Sql
       @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
       Logger.info("Entered #{cash_amount} from #{from}")
     else
-      cash_amount = data["cash_amount"]
-      from        = data["cash_from"]
-      puts "CASH #{cash_amount}"
-      @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
+      cash_amount    = data["cash_amount"]
+      from           = data["cash_from"]
+      current_amount = data["cash_current"]
+      @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', current_amount
       Logger.info("Entered #{cash_amount} from #{from}")
     end
   end
@@ -215,7 +215,7 @@ class Inventory < Sql
     count     = 0
     @db.execute("select spot_price from #{table};").each do |row|
       row = row.shift
-      avg_total += row
+      avg_total += row.to_i
       count += 1
     end
     avg = avg_total / count
@@ -371,7 +371,7 @@ class Inventory < Sql
     end
   end
 
-  def update_cash_own(row_id)
+  def update_cash_own(row_id, spent_amount, website: false)
     # The row should only have the status as 'own' or 'sold'
     # Depending what status it will do the oppsite of the value.
     # For example if sold it will change to own, if own it will change to sold
@@ -386,11 +386,23 @@ class Inventory < Sql
         @db.execute("UPDATE Cash SET status = 'own' WHERE id='#{row_id}';")
         Logger.info("Cash Table: Changed from 'spent' to 'own' on row: #{row_id}")
       end
-      print('Enter Spent Amount: ')
-      # Update the spent amount
-      spent_amount = gets.chomp
-      @db.execute("UPDATE Cash SET spent_amount = '#{spent_amount}' WHERE id='#{row_id}';")
-      Logger.info("Updated cash table. Updated 'spent_amount' with #{spent_amount} with row_id: #{row_id}")
+      if website.eql?(false)
+        print('Enter Spent Amount: ')
+        # Update the spent amount
+        spent_amount = gets.chomp
+        @db.execute("UPDATE Cash SET spent_amount = '#{spent_amount}' WHERE id='#{row_id}';")
+        Logger.info("Updated cash table. Updated 'spent_amount' with #{spent_amount} with row_id: #{row_id}")
+      else
+        @db.execute("select spent_amount from Cash where id = '#{row_id}';").each do |row|
+          row = row.shift
+          @current_amount = row
+        end
+        if spent_amount.to_f <= @current_amount.to_f
+          new_amount = @current_amount.to_f - spent_amount.to_f
+          @db.execute("UPDATE Cash SET spent_amount = '#{new_amount}' WHERE id='#{row_id}';")
+          Logger.info("Updated cash table. Updated 'spent_amount' with #{new_amount} with row_id: #{row_id}")
+        end
+      end
     end
   end
 
@@ -426,7 +438,6 @@ class Inventory < Sql
     Logger.info("Deleting the row with row_id: #{row_id} on the #{table} table")
     begin
       # Deletes the row by the given 'row_id'
-      p row_id
       @db.execute("delete from #{table} where id ='#{row_id}';")
       Logger.info("Deleted row, #{row_id} from the #{table} table.")
     rescue StandardError => e
@@ -440,14 +451,19 @@ end
 module Silver
   @silver = Inventory.new
   def self.get_silver_price(amount)
-    ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3'
-    # use Duck Duck go to get the current price of silver. It will take the
-    # amount of silver and use this api to get the current worth of the silver.
-    r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd",
-                     { headers: { 'User-Agent' => ua } }).body
-    r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
-    json = JSON.parse(r_clean)['to'].shift
-    json['mid']
+    begin
+      ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3'
+      # use Duck Duck go to get the current price of silver. It will take the
+      # amount of silver and use this api to get the current worth of the silver.
+      r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xag/usd",
+                       { headers: { 'User-Agent' => ua } }).body
+      
+        r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
+        json = JSON.parse(r_clean)['to'].shift
+        json['mid']
+    rescue => e
+      puts "#{e}".red
+    end
   end
 
   def self.print_table(rows, headers = nil, title = nil)
@@ -490,11 +506,11 @@ module Silver
   end
 
   def self.select_bar
-    @silver.select(1) # Bar
+    @silver.select(1, html_table: false) # Bar
   end
 
   def self.select_junk
-    @silver.select(2) # Junk
+    @silver.select(2, html_table: false) # Junk
   end
 
   def self.select_bullion

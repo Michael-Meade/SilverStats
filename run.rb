@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
 require 'sinatra'
+require 'colorize'
 require_relative 'test2'
-require 'CryptoPriceFinder'
+require 'securerandom'
+begin
+  require 'CryptoPriceFinder'
+rescue => e
+  puts e.red
+end
 require 'json'
 require 'dotenv'
 require 'gruff'
@@ -41,11 +47,13 @@ post '/enter_crypto' do
   new_amount  = params["new_amount"]
   case crypto_type.to_s
   when "Bitcoin"
+    # add an amount to the bitcoin current amount
     if params["crypto_action"].eql?("Add")
       btc_amount = json[crypto_type.downcase]
       final  = btc_amount.to_f + new_amount.to_f
       json["bitcoin"] = final
       File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
+    # subtract from the current amount
     elsif params["crypto_action"].eql?("Subtract")
       btc_amount = json[crypto_type.downcase]
       if btc_amount >= new_amount.to_i
@@ -58,8 +66,8 @@ post '/enter_crypto' do
     if params["crypto_action"].eql?("Add")
       xmr_amount = json[crypto_type.downcase]
       final  = xmr_amount.to_f + new_amount.to_f
+      # update the monero key with the final amount 
       json["monero"] = final
-      p json
       File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
     elsif params["crypto_action"].eql?("Subtract")
       xmr_amount = json[crypto_type.downcase]
@@ -73,11 +81,14 @@ post '/enter_crypto' do
     if params["crypto_action"].eql?("Add")
       xlm_amount = json[crypto_type.downcase]
       final  = xlm_amount.to_f + new_amount.to_f
+      # update the stellar key
       json["stellar"] = final
+      # save the newly updated hash to a file
       File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
     elsif params["crypto_action"].eql?("Subtract")
       xlm_amount = json[crypto_type.downcase]
       if xlm_amount >= new_amount.to_i
+        # subtract the current xlm amount minus the new_amount
         final  = xlm_amount.to_f - new_amount.to_f
         json["stellar"] = final
         File.open(ENV['CRYPTO'], 'w') { |file| file.write(json.to_json) }
@@ -105,6 +116,9 @@ end
 get '/delete_junk' do 
 	erb :delete_junk
 end
+get '/delete_cash' do
+  erb :delete_cash 
+end
 get '/delete_bar' do 
 	erb :delete_bar
 end
@@ -113,6 +127,9 @@ get '/status_bar' do
 end
 get '/status_bullion' do
 	erb :status_bullion
+end
+get '/status_cash' do 
+  erb :status_cash
 end
 get '/status_junk' do
 	erb :status_junk
@@ -135,15 +152,19 @@ post '/status' do
   when 'status_bar'
     # get row id
     row_id = params['status_bar'].to_s
+    # update own by using row_id
     inv.update_own(row_id, 1, website: true, sold_price: params['sold_price'].to_s)
   when 'status_junk'
-    # get row id
+    # get row id for junk
     row_id = params['status_junk'].to_s
     inv.update_own(row_id, 2, website: true, sold_price: params['sold_price'].to_s)
   when 'status_bullion'
-    # get row id
+    # get row id for bullion
     row_id = params['status_bullion'].to_s
     inv.update_own(row_id, 3, website: true, sold_price: params['sold_price'].to_s)
+  when 'status_cash'
+    row_id = params['status_cash'].to_s
+    inv.update_cash_own(row_id, params['sold_price'].to_s , website: true)
   end
   erb :index
 end
@@ -157,6 +178,8 @@ post '/delete_row' do
 		inv.delete_row(params["delete_junk"], 2)
 	when "delete_bullion"
 		inv.delete_row(params["delete_bullion"], 3)
+  when "delete_cash"
+    inv.delete_row(params["delete_cash"], 4)
 	end
 	erb :index
 end
