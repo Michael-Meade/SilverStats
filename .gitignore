@@ -7,4 +7,4 @@ line2.rb
 *.json
 images/crypto_pie.png
 images/silver_pie.png
-public/*.png
+/public/*.png
