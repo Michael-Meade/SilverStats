@@ -649,8 +649,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 end
                 g2 = Gruff::Bar.new
                 g2.show_labels_for_bar_values = true
-                #g2.replace_colors = (["#FF0000", "#E2001C", "#C60038", "#AA0055", "#8D0071", "#71008D", "#5500AA", "#3800C6", "#1C00E2", "#0000FF"])
-                g2.title = 'Purchase'
+                g2.title = 'Purchase Amounts from Sites'
                 g2.sort = true
                 names.to_a.each do |data|
                   g2.data(data[0], data[1].to_i, "#" + SecureRandom.hex(3))
@@ -658,6 +657,24 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 g2.write(File.join("public", "purchase.png"))
               %> 
               <img src="purchase.png" width="460" height="345">
+              <br>
+              <%
+                i    = Inventory.new
+                list = i.list_stores
+                g3 = Gruff::Bar.new
+                g3.show_labels_for_bar_values = true
+                g3.title = 'Amount Spent At Different Sites'
+                g3.sort = true
+                list.to_a.each do |data|
+                  g3.data(data[0], data[1].to_i, "#" + SecureRandom.hex(3))
+                end
+                g3.write(File.join("public", "different_sites.png"))
+
+
+              %>
+              <img src="different_sites.png" width="460" height="345">
+              <br>
+
             </div>
           </li>
           <li>

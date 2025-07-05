@@ -281,6 +281,35 @@ class Inventory < Sql
     total_shipping
   end
 
+  def list_stores
+    total = []
+    # JM
+    jm_total = 0
+    @db.execute("select total from Bullion where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
+    total << ["JMbullion", jm_total]
+    # Golden State Mint
+    gsm_total = 0
+    @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
+    total << ["Gold State Mint", gsm_total ]
+    # MoneyMetals
+    mm_total = 0
+    @db.execute("select total from Bullion where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
+    total << ["MoneyMetals", mm_total]
+    # APMEX
+    a_total = 0
+    @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| a_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total += amount.shift }
+    total << ["APMEX", a_total]
+  total
+  end
+
   def select_total_oz(id)
     table = get_options(id) # Get the type of silver
     total_oz = 0
