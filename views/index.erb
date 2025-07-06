@@ -661,7 +661,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               <br>
               <%
                 i    = Inventory.new
-                list = i.list_stores
+                list = i.list_sellers
                 g3 = Gruff::Bar.new
                 g3.show_labels_for_bar_values = true
                 g3.title = 'Amount Spent At Different Sites'
@@ -674,9 +674,27 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
 
               %>
               <h1>Amount spent at different Sites</h1>
-              <img src="different_sites.png" width="460" height="345">
+              <img src="different_sites.png" width="1000%" height="1000%">
               <br>
-
+              <%
+                c = []
+                s = Inventory.new
+                cash =  s.select(4, html_table: true) 
+                cash.each do |i|
+                  if i[3].eql?("own")
+                    c << [ i[2], i[4] ]
+                  end
+                end
+                g4 = Gruff::Pie.new
+                g4.title = 'Cash Pie Chart'
+                c.each do |data|
+                  g4.data(data[0], data[1].to_i, "#" + SecureRandom.hex(3))
+                end
+                g4.write(File.join("public", "cash_pie.png"))
+              %>
+              <h1>Cash Pie Chart</h1>
+              <img src="cash_pie.png" width="1000%" height="1000%">
+              <br>
             </div>
           </li>
           <li>
