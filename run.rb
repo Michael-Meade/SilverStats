@@ -29,6 +29,15 @@ post '/enter_bar' do
   i.input_site(1, params)
   erb :index
 end
+post '/enter_gold' do
+  i = Inventory.new
+  # 5: gold
+  i.input_site(5, params)
+  erb :index
+end
+get '/gold' do
+  erb :gold
+end
 get '/junk' do
   erb :junk
 end
@@ -121,6 +130,9 @@ get '/delete_cash' do
 end
 get '/delete_bar' do 
 	erb :delete_bar
+end
+get '/delete_cash' do 
+  erb :delete_gold
 end
 get '/status_bar' do
 	erb :status_bar

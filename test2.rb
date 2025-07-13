@@ -22,7 +22,7 @@ class Sql
       Logger.error("Error with creating Cash table: #{e}")
     end
     begin
-      %w[Bar Junk Bullion].each do |table|
+      %w[Bar Junk Bullion Gold].each do |table|
         @db.execute("create table IF NOT EXISTS #{table} (id integer primary key autoincrement, bought_date text,
             spot_price INTEGER,
             amount INTEGER,
@@ -572,7 +572,7 @@ module Silver
       c = c.shift
       count += c
     end
-    # each Franklin half has 0.3617 oz of silver in it
+    # each Franklin half has 0.3617 oz of silver in
     return [count, count * 0.3617] if html_table
 
 

@@ -588,6 +588,10 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <button class="button button2" onclick="document.location='/cash'">Cash</button>&nbsp&nbsp
                   <button class="button" onclick="document.location='/status_cash'">Change Status</button>&nbsp&nbsp
                   <button class="button button3" onclick="document.location='/delete_cash'">Delete Row</button><br><br>
+                  <h1>Gold</h1>
+                  <button class="button button2" onclick="document.location='/gold'">gold</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_gold'">Change Status</button>&nbsp&nbsp
+                  <button class="button button3" onclick="document.location='/delete_gold'">Delete Row</button><br><br>
                 </center>
             </div>
           </li>
@@ -771,6 +775,47 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               </table>
             </div>
           </li>
+        <li>
+          <input id="tab9" type="radio" name="tabs" />
+          <label for="tab9">Gold</label>
+          <div id="tab-panel9" class="tab-panel"><br><br>
+            <table style="width:100%" border="1" align="center">
+              <tr>
+                <th>ID</th>
+                <th>Bought Date</th>
+                <th>Spot Price</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Shipping</th>
+                <th>Total</th>
+                <th>OZ</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Sold Value</th>
+                <th>Seller</th>
+                <th>Method</th>
+              </tr>
+              <% bar =  @silver.select(5, html_table: true) %>
+              <% bar.each do |i| %>
+              <tr>
+                <td><font color="white"><%= i[0] %></font></td>
+                <td><font color="white"><%= i[1] %></font></td>
+                <td><font color="white"><%= i[2] %></font></td>
+                <td><font color="white"><%= i[3] %></font></td>
+                <td><font color="white"><%= i[4] %></font></td>
+                <td><font color="white"><%= i[5] %></font></td>
+                <td><font color="white"><%= i[6] %></font></td>
+                <td><font color="white"><%= i[7] %></font></td>
+                <td><font color="white"><%= i[8] %></font></td>
+                <td><font color="white"><%= i[9] %></font></td>
+                <td><font color="white"><%= i[10] %></font></td>
+                <td><font color="white"><%= i[11] %></font></td>
+                <td><font color="white"><%= i[12] %></font></td>
+              </tr>
+              <% end %>
+            </table>
+          </div>
+        </li>
       </ul>
     </center>
   </body>

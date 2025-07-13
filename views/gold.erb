@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <title> Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+  <body>
+    
+    <body style="background-color: #121212;">
+    <font color="yellow">
+      <center>
+      <h1>
+        <pre>
+
+ ██████   ██████  ██      ██████  
+██       ██    ██ ██      ██   ██ 
+██   ███ ██    ██ ██      ██   ██ 
+██    ██ ██    ██ ██      ██   ██ 
+ ██████   ██████  ███████ ██████  
+                                  
+                                  
+ 
+                                                                                                     
+        </pre>
+        <br>
+        <center>
+      <h1>
+        Enter Gold
+        <br><br>
+
+        <form action="/enter_gold" method="post">
+          <label for="bought_date">Bought Date:</label><br>
+          <input type="date" id="bought_date" name="bought_date" required="required"><br>
+
+          <label for="spot_price">Spot Price:</label><br>
+          <input type="number" id="spot_price" name="spot_price" step="0.01" required="required" value="0.00"><br>
+
+          <label for="amount">Amount ( count ):</label><br>
+          <input list="gold-amount" id="amount" name="amount" required="required" />
+          <datalist id="gold-amount">
+            <option value="1">
+            <option value="2">
+            <option value="3">
+            <option value="4">
+            <option value="5">
+            <option value="6">
+            <option value="7">
+            <option value="8">
+            <option value="9">
+            <option value="10">
+            <option value="11">
+          </datalist><br>
+          
+          <label for="price">Price:</label><br>
+          <input type="number" id="price" name="price" step="0.01" required="required" value=""><br>
+
+          <label for="shipping">Shipping:</label><br>
+          <input type="number" id="shipping" name="shipping" step="0.01" required="required" value="0.00"><br>
+
+          <label for="total">Total $:</label><br>
+          <input type="number" id="total" name="total" step="0.01" required="required" value="0.00"><br>
+
+          <label for="oz">OZ:</label><br>
+          <input list="gold-oz" id="oz" name="oz" />
+          <datalist id="gold-oz">
+            <option value="1">
+            <option value="2">
+            <option value="3">
+            <option value="4">
+            <option value="5">
+            <option value="6">
+            <option value="7">
+            <option value="8">
+            <option value="9">
+            <option value="10">
+            <option value="11">
+          </datalist><br>
+
+          <label for="name">Name:</label><br>
+          <input list="gold-type" id="name" name="name" />
+          <datalist id="gold-type">
+            <option value="Founders: Madison">
+            <option value="Founders: Adam Smith">
+            <option value="Founders of liberty Montesquieu">
+            <option value="Founders Of Liberty: Cicero">
+            <option value="Bitcoin 1 oz  round">
+            <option value="Ben Franklin round">
+            <option value="John Wick 1 oz ">
+            <option value="APMEX 1 OZ round">
+            <option value="American  Eagle">
+            <option value="FOUNDERS OF LIBERTY: FRANKLIN">
+            <option value="Gun And Trout">
+          </datalist><br>
+
+          <label for="status">Status:</label><br>
+          <select name="status" id="status">
+            <option value="own">Own</option>
+            <option value="sold">Sold</option>
+            <br>
+          </select><br>
+
+          <label for="sold_value">Sold Value:</label><br>
+          <input type="number" id="sold_value" name="sold_value" required="required" value="0.00"><br>
+
+          <label for="seller">Seller:</label><br>
+          <input type="text" id="seller" name="seller" required="required" value="Apmex"><br>
+
+          <label for="gold-method">Method:</label><br>
+          <input list="gold-type1" id="gold-method" name="method" />
+          <datalist id="gold-type1">
+            <option value="Todd">
+            <option value="Gift">
+            <option value="Reddit">
+            <option value="Person">
+            <option value="APMEX">
+            <option value="JMgold">
+            <option value="Ebay">
+            <option value="nh expo">
+            <option value="Golden State Mint">
+          </datalist><br>
+          <input type="submit" value="Submit">
+        </form><br><br>
+
+        <form action="/status" method="post">
+          <label for="change_status">Row ID:</label><br>
+          <input type="number" id="status_gold" name="status_gold" required="required" value="1"><br>
+          <label for="change_status">Sold Price:</label><br>
+          <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
+          <input type="submit" value="Submit">
+        </form><br><br>
+
+        
+      </center>
+      </h1>
+      </center>
+    </h1>
+  </body>
+</html>
