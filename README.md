@@ -54,7 +54,7 @@ The enter silver page has three buttons, one to change status, delete a certain 
 
 
 ## Pie Charts
-Shows the percentage of different types of sivler and cryptocurrency. 
+Shows the percentage of different types of silver and cryptocurrency. 
 ![Pie charts showing the types of silver](images/pie_chart.png)
 
 ## Cryptocurrency table
@@ -75,3 +75,4 @@ Shows a nice table with the different types of silver amount in OZ and the amoun
 There are two crypto json files, `prod.json` and `dev.json`. There will be a text in the crypto tag with the color red if 
 `dev.json` is being used. If the `prod.json` is active it will show green text.
 
+### 

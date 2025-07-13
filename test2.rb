@@ -55,6 +55,8 @@ class Inventory < Sql
       'Bullion'
     when 4
       'Cash'
+    when 5
+      'Gold'
     end
   end
 
@@ -570,6 +572,7 @@ module Silver
       c = c.shift
       count += c
     end
+    # each Franklin half has 0.3617 oz of silver in it
     return [count, count * 0.3617] if html_table
 
 
