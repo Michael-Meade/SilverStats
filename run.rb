@@ -131,7 +131,7 @@ end
 get '/delete_bar' do 
 	erb :delete_bar
 end
-get '/delete_cash' do 
+get '/delete_gold' do 
   erb :delete_gold
 end
 get '/status_bar' do
@@ -145,6 +145,9 @@ get '/status_cash' do
 end
 get '/status_junk' do
 	erb :status_junk
+end
+get '/status_gold' do 
+  erb :status_gold
 end
 post '/enter_bullion' do
   i = Inventory.new
@@ -177,6 +180,9 @@ post '/status' do
   when 'status_cash'
     row_id = params['status_cash'].to_s
     inv.update_cash_own(row_id, params['sold_price'].to_s , website: true)
+  when 'status_gold'
+    row_id = params['status_gold'].to_s
+    inv.update_own(row_id, 5, website: true, sold_price: params['sold_price'].to_s)
   end
   erb :index
 end
@@ -192,6 +198,8 @@ post '/delete_row' do
 		inv.delete_row(params["delete_bullion"], 3)
   when "delete_cash"
     inv.delete_row(params["delete_cash"], 4)
+  when "delete_gold"
+    inv.delete_row(params["delete_gold"], 5)
 	end
 	erb :index
 end

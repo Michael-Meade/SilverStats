@@ -220,8 +220,17 @@ class Inventory < Sql
       avg_total += row.to_i
       count += 1
     end
-    avg = avg_total / count
-  return [ avg, count ]
+    begin
+      if avg_total.to_i.eql?(0)
+        return [ 0, count]
+      else
+        avg = avg_total / count
+        return [ avg, count ]
+      end
+    rescue => e
+      puts "#{e}"
+    end
+  
   end
   def select_price_avg(id, html_table: false)
     count = 0
@@ -268,8 +277,23 @@ class Inventory < Sql
       total_shipping += row
       count += 1
     end
-    Logger.info("Shipping avg #{table}: #{total_shipping / count}")
-    [total_shipping / count, count]
+    begin
+      if count.to_i.eql?(0)
+        Logger.info("Shipping avg #{table}: 0")
+        return [0, count]
+      end
+      if total_shipping.to_i.eql?(0)
+        Logger.info("total_shipping -> #{table}:   0")
+        return [0, count]
+      end
+      if !count.to_i.eql?(0) && !total_shipping.to_i.eql?(0)
+        Logger.info("Shipping avg #{table}: #{total_shipping / count}")
+        [total_shipping / count, count]
+      end
+    rescue StandardError => e
+      puts "ERROR: #{e}".red
+      Logger.error("Error: #{e} \n table: #{table}")
+    end
   end
 
   def shipping_total(id)
@@ -336,9 +360,10 @@ class Inventory < Sql
     junk_sold     = @db.execute("select status from Junk where status = 'sold';").count
     bullion_own   = @db.execute("select status from Bullion where status = 'own';").count
     bullion_sold  = @db.execute("select status from Bullion where status = 'sold';").count
-
-    #         0         1        2          3             4            5
-    [bar_own, junk_own, bar_sold, junk_sold, bullion_own, bullion_sold]
+    gold_own      = @db.execute("select status from Gold where status = 'own';").count
+    gold_sold     = @db.execute("select status from Gold where status = 'sold';").count
+    #  0         1        2          3             4            5           6         7
+    [bar_own, junk_own, bar_sold, junk_sold, bullion_own, bullion_sold, gold_own, gold_sold]
   end
 
   def select_franklins
@@ -468,13 +493,25 @@ class Inventory < Sql
   end
 
   def delete_row(row_id, id)
+    row_id = row_id.split(',')
     # Get the type of silver
     table = get_options(id)
     Logger.info("Deleting the row with row_id: #{row_id} on the #{table} table")
     begin
-      # Deletes the row by the given 'row_id'
-      @db.execute("delete from #{table} where id ='#{row_id}';")
-      Logger.info("Deleted row, #{row_id} from the #{table} table.")
+      if !row_id.count.to_i.eql?(1)
+        #check if `row_id` element count is not 1
+        row_id.each do |id|
+          @db.execute("delete from #{table} where id ='#{id}';")
+          Logger.info("Deleted row, #{row_id} from the #{table} table.")
+        end
+      else
+        # the row_id count is 1
+        row_id = row_id.shift
+        # removes the array^
+        # Deletes the row by the given 'row_id'
+        @db.execute("delete from #{table} where id ='#{row_id}';")
+        Logger.info("Deleted row, #{row_id} from the #{table} table.")
+      end
     rescue StandardError => e
       # prints the error in red
       puts "ERROR: #{e}".red
@@ -495,6 +532,27 @@ module Silver
       
         r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
         json = JSON.parse(r_clean)['to'].shift
+        json['mid']
+    rescue => e
+      puts "#{e}".red
+    end
+  end
+
+  def self.get_gold_price(amount, gram: true)
+    begin
+      ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3'
+      # use Duck Duck go to get the current price of gold. It will take the
+      # amount of gold and use this api to get the current worth of the gold.
+      puts "am : #{amount}"
+      if gram
+       amount = amount.to_f / 28.34952
+      end
+      r = HTTParty.get("https://duckduckgo.com/js/spice/currency/#{amount}/xau/usd",
+                       { headers: { 'User-Agent' => ua } }).body
+      
+        r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
+        json = JSON.parse(r_clean)['to'].shift
+        puts "mid: #{json['mid']}"
         json['mid']
     rescue => e
       puts "#{e}".red

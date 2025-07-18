@@ -51,11 +51,13 @@
         bar     = @silver.select_total_oz(1) # 1: Bar
         junk    = @silver.select_total_oz(2) # 2: Junk
         bullion = @silver.select_total_oz(3) # 3: Bullion
+        gold    = @silver.select_total_oz(5) # 5: Gold
         bar_amount     = Silver.get_silver_price(bar)     # Add amount of bars to the current price of Silver
         junk_amount    = Silver.get_silver_price(junk)    # Add amount of Junk to the current price of Silver
-        bullion_amount = Silver.get_silver_price(bullion) # Add amount of Bullion to the current price of Silver 
+        bullion_amount = Silver.get_silver_price(bullion) # Add amount of Bullion to the current price of Silver
+        gold_amount    = Silver.get_gold_price(gold)      # Add amount of Gold to the current price of Gold 
         total          = bar + junk + bullion
-        amount_all     = bar_amount + junk_amount + bullion_amount
+        amount_all     = bar_amount + junk_amount + bullion_amount 
       %>
 
       <table style="width:50%" border="1" align="center">
@@ -210,9 +212,6 @@
                   <td><font color="white"><%=  bars_spot_avg[1]    %></font></td>
                 </tr>
               </table>
-
-
-
               <% status = ENV['DB'] %>
               <% if !status.eql?("test2.db") %>
               <b><font color="red">DEV mode</b></font>
@@ -245,21 +244,21 @@
                 </tr>
                 <% junk =  @silver.select(2, html_table: true) %>
                 <% junk.each do |i| %>
-                <tr>
-                  <td><font color="white"><%= i[0] %></font></td>
-                  <td><font color="white"><%= i[1] %></font></td>
-                  <td><font color="white"><%= i[2] %></font></td>
-                  <td><font color="white"><%= i[3] %></font></td>
-                  <td><font color="white"><%= i[4] %></font></td>
-                  <td><font color="white"><%= i[5] %></font></td>
-                  <td><font color="white"><%= i[6] %></font></td>
-                  <td><font color="white"><%= i[7] %></font></td>
-                  <td><font color="white"><%= i[8] %></font></td>
-                  <td><font color="white"><%= i[9] %></font></td>
-                  <td><font color="white"><%= i[10] %></font></td>
-                  <td><font color="white"><%= i[11] %></font></td>
-                  <td><font color="white"><%= i[12] %></font></td>
-                </tr>
+                  <tr>
+                    <td><font color="white"><%= i[0] %></font></td>
+                    <td><font color="white"><%= i[1] %></font></td>
+                    <td><font color="white"><%= i[2] %></font></td>
+                    <td><font color="white"><%= i[3] %></font></td>
+                    <td><font color="white"><%= i[4] %></font></td>
+                    <td><font color="white"><%= i[5] %></font></td>
+                    <td><font color="white"><%= i[6] %></font></td>
+                    <td><font color="white"><%= i[7] %></font></td>
+                    <td><font color="white"><%= i[8] %></font></td>
+                    <td><font color="white"><%= i[9] %></font></td>
+                    <td><font color="white"><%= i[10] %></font></td>
+                    <td><font color="white"><%= i[11] %></font></td>
+                    <td><font color="white"><%= i[12] %></font></td>
+                  </tr>
                 <% end %>
               </table>
               <br><br>
@@ -325,7 +324,6 @@
                   <th>Silver Amound in USD</th>
                 </tr>
                 <tr>
-
                   <td><font color="white"><%= Silver.franklins(html_table: true)[0] %></font></td>
                   <td><font color="white"><%= Silver.franklins(html_table: true)[1] %> OZ</font></td>
                   <td><font color="#1CE815">$<%= Silver.get_silver_price(Silver.franklins(html_table: true)[1]).round(2) %></font></td>
@@ -388,21 +386,21 @@
                 </tr>
                 <% bull =  @silver.select(3, html_table: true) %>
                 <% bull.each do |i| %>
-                <tr>
-                  <td><font color="white"><%= i[0] %></font></td>
-                  <td><font color="white"><%= i[1] %></font></td>
-                  <td><font color="white"><%= i[2] %></font></td>
-                  <td><font color="white"><%= i[3] %></font></td>
-                  <td><font color="white"><%= i[4] %></font></td>
-                  <td><font color="white"><%= i[5] %></font></td>
-                  <td><font color="white"><%= i[6] %></font></td>
-                  <td><font color="white"><%= i[7] %></font></td>
-                  <td><font color="white"><%= i[8] %></font></td>
-                  <td><font color="white"><%= i[9] %></font></td>
-                  <td><font color="white"><%= i[10] %></font></td>
-                  <td><font color="white"><%= i[11] %></font></td>
-                  <td><font color="white"><%= i[12] %></font></td>
-                </tr>
+                  <tr>
+                    <td><font color="white"><%= i[0] %></font></td>
+                    <td><font color="white"><%= i[1] %></font></td>
+                    <td><font color="white"><%= i[2] %></font></td>
+                    <td><font color="white"><%= i[3] %></font></td>
+                    <td><font color="white"><%= i[4] %></font></td>
+                    <td><font color="white"><%= i[5] %></font></td>
+                    <td><font color="white"><%= i[6] %></font></td>
+                    <td><font color="white"><%= i[7] %></font></td>
+                    <td><font color="white"><%= i[8] %></font></td>
+                    <td><font color="white"><%= i[9] %></font></td>
+                    <td><font color="white"><%= i[10] %></font></td>
+                    <td><font color="white"><%= i[11] %></font></td>
+                    <td><font color="white"><%= i[12] %></font></td>
+                  </tr>
                 <% end %>
               </table>
               <br><br>
@@ -620,7 +618,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
                 btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
                 pie_crypto = [["Monero", xmr.to_s], ["Stellar", xlm.to_s], ["Bitcoin", btc.to_s]]
-                g1 = Gruff::Pie.new('800x400')
+                g1 = Gruff::Pie.new
                 g1.title = 'CryptoCurrency Pie Chart'
                 pie_crypto.each do |data|
                   g1.data(data[0], data[1].to_i)
@@ -674,8 +672,6 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   g3.data(data[0], data[1].to_i, "#" + SecureRandom.hex(3))
                 end
                 g3.write(File.join("public", "different_sites.png"))
-
-
               %>
               <h1>Amount spent at different Sites</h1>
               <img src="different_sites.png" width="100%" height="100%">
@@ -750,26 +746,34 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 bar     = @silver.select_total_oz(1) # 1: Bar
                 junk    = @silver.select_total_oz(2) # 2: Junk
                 bullion = @silver.select_total_oz(3) # 3: Bullion
-                total          = bar + junk + bullion
-                silver_total     = Silver.get_silver_price(total).round(2)
+                gold    = @silver.select_total_oz(5) # 5: Gold
 
-                xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s  
-                xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
-                btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
-                crypto_total = xmr.to_i + xlm.to_i + btc.to_i
-                final_total = cash_total.to_i + silver_total.to_i + crypto_total.to_i
+                total          = bar + junk + bullion
+                silver_total   = Silver.get_silver_price(total).round(2)
+                gold_total     = Silver.get_gold_price(gold).round(2)
+                begin
+                  xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s  
+                  xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
+                  btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
+                  crypto_total = xmr.to_i + xlm.to_i + btc.to_i
+                  
+                rescue 
+                end
+                final_total = cash_total.to_f + silver_total.to_f + crypto_total.to_f + gold_total.to_f
               %>
               <table style="width:50%" border="1" align="center">
                 <tr>
                   <th>Silver Amount USD</th>
                   <th>Cash Amount      </th>
                   <th>Crypto Amount USD</th>
+                  <th>Gold Amount USD  </th>
                   <th>TOTAL            </th>
                 </tr>
                 <tr>
                   <td>$<%= silver_total %></td>
                   <td>$<%= cash_total   %></td>
                   <td>$<%= crypto_total %></td>
+                  <td>$<%= gold_total   %></td>
                   <td>$<%= final_total  %></td>
                 </tr>
               </table>
@@ -779,6 +783,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
           <input id="tab9" type="radio" name="tabs" />
           <label for="tab9">Gold</label>
           <div id="tab-panel9" class="tab-panel"><br><br>
+            <h1><center>Select Gold</center></h1>
             <table style="width:100%" border="1" align="center">
               <tr>
                 <th>ID</th>
@@ -788,32 +793,117 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 <th>Price</th>
                 <th>Shipping</th>
                 <th>Total</th>
-                <th>OZ</th>
+                <th>Gram</th>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Sold Value</th>
                 <th>Seller</th>
                 <th>Method</th>
               </tr>
-              <% bar =  @silver.select(5, html_table: true) %>
-              <% bar.each do |i| %>
-              <tr>
-                <td><font color="white"><%= i[0] %></font></td>
-                <td><font color="white"><%= i[1] %></font></td>
-                <td><font color="white"><%= i[2] %></font></td>
-                <td><font color="white"><%= i[3] %></font></td>
-                <td><font color="white"><%= i[4] %></font></td>
-                <td><font color="white"><%= i[5] %></font></td>
-                <td><font color="white"><%= i[6] %></font></td>
-                <td><font color="white"><%= i[7] %></font></td>
-                <td><font color="white"><%= i[8] %></font></td>
-                <td><font color="white"><%= i[9] %></font></td>
-                <td><font color="white"><%= i[10] %></font></td>
-                <td><font color="white"><%= i[11] %></font></td>
-                <td><font color="white"><%= i[12] %></font></td>
-              </tr>
+              <% gold =  @silver.select(5, html_table: true) %>
+              <% gold.each do |i| %>
+                <tr>
+                  <td><font color="white"><%= i[0] %></font></td>
+                  <td><font color="white"><%= i[1] %></font></td>
+                  <td><font color="white"><%= i[2] %></font></td>
+                  <td><font color="white"><%= i[3] %></font></td>
+                  <td><font color="white"><%= i[4] %></font></td>
+                  <td><font color="white"><%= i[5] %></font></td>
+                  <td><font color="white"><%= i[6] %></font></td>
+                  <td><font color="white"><%= i[7] %></font></td>
+                  <td><font color="white"><%= i[8] %></font></td>
+                  <td><font color="white"><%= i[9] %></font></td>
+                  <td><font color="white"><%= i[10] %></font></td>
+                  <td><font color="white"><%= i[11] %></font></td>
+                  <td><font color="white"><%= i[12] %></font></td>
+                </tr>
               <% end %>
-            </table>
+            </table><br><br>
+            <h1><center>Gold Method of Purchase</center></h1>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Method</th>
+                  <th>Count</th>
+                </tr>
+                <% gold_meth = @silver.select_method(5, html_table: false) %>
+                <% gold_meth.each do |i| %>
+                  <tr>
+                    <td><font color="white"><%= i[0] %></font></td>
+                    <td><font color="white"><%= i[1] %></font></td>
+                  </tr>
+                <% end %>
+              </table>
+              <br><br>
+              <h1>Gold Shipping Information</h1>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Total Cost</th>
+                  <th>Average</th>
+                  <th>Count  </th>
+                </tr>
+                  <% gold_shipping       = @silver.shipping_total(5)   %>
+                  <% avg_gold_shipping   = @silver.shipping_avg(5)     %>
+                  <tr>
+                    <td><font color="white"><%= gold_shipping        %>  </font></td>
+                    <td><font color="white"><%= avg_gold_shipping[0] %>  </font></td>
+                    <td><font color="white"><%= avg_gold_shipping[1] %>  </font></td>
+                  </tr>
+              </table>
+              <br><br>
+              <h1>Gold Sold vs Own</h1>
+              <% sold =  @silver.sold_own %>
+              <% gold_sold_total = @silver.sold_oz_total(5) %>
+              <% gold_usd = Silver.get_gold_price(gold_sold_total, gram: true) %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Own</th>
+                  <th>Sold </th>
+                  <th>Sold Gram Total</th>
+                  <th>USD Sold Total</th>
+                </tr>
+                <tr>
+                  <td><font color="white"><%= sold[6] %></font></td>
+                  <td><font color="white"><%= sold[7] %></font></td>
+                  <td><font color="white"><%= gold_sold_total %></font></td>
+                  <td><font color="white">$<%= gold_usd %></font></td>
+                </tr>
+              </table>
+              <br><br>
+              <h1>Gold Average Price</h1>
+              <% gold_price_avg =  @silver.select_price_avg(5) %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Average Price</th>
+                </tr>
+                <tr>
+                  <td><font color="white"><%= gold_price_avg %></font></td>
+                </tr>
+              </table>
+              <br><br>
+              <h1>Gold Sold Total</h1>
+              <% gold_sold_total = @silver.sold_total(5) %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Sold Value</th>
+                </tr>
+                <tr>
+                  <td><font color="white">$<%= gold_sold_total %></font></td>
+                </tr>
+              </table>
+              <br><br>
+              <h1>Gold Spot Average</h1>
+              <% gold_spot_avg = @silver.spot_avg(5) %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Average Spot Price</th>
+                  <th>Count</th>
+                </tr>
+                <tr>
+                  <td><font color="white">$<%= gold_spot_avg[0]    %></font></td>
+                  <td><font color="white"><%=  gold_spot_avg[1]    %></font></td>
+                </tr>
+              </table>
+            </div>
           </div>
         </li>
       </ul>

@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+  <body style="background-color: #121212;">
+    <font color="yellow">
+    	<center><pre>
+        <div id="tab-panel7" class="tab-panel">
+          <br><br>
+
+          <pre><font color="blue">
+            
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+   SSSSSSSSSSSSSSS      tttt                                    tttt                                                          CCCCCCCCCCCCC                                 hhhhhhh             
+ SS:::::::::::::::S  ttt:::t                                 ttt:::t                                                       CCC::::::::::::C                                 h:::::h             
+S:::::SSSSSS::::::S  t:::::t                                 t:::::t                                                     CC:::::::::::::::C                                 h:::::h             
+S:::::S     SSSSSSS  t:::::t                                 t:::::t                                                    C:::::CCCCCCCC::::C                                 h:::::h             
+S:::::S        ttttttt:::::ttttttt      aaaaaaaaaaaaa  ttttttt:::::ttttttt    uuuuuu    uuuuuu      ssssssssss         C:::::C       CCCCCC  aaaaaaaaaaaaa      ssssssssss   h::::h hhhhh       
+S:::::S        t:::::::::::::::::t      a::::::::::::a t:::::::::::::::::t    u::::u    u::::u    ss::::::::::s       C:::::C                a::::::::::::a   ss::::::::::s  h::::hh:::::hhh    
+ S::::SSSS     t:::::::::::::::::t      aaaaaaaaa:::::at:::::::::::::::::t    u::::u    u::::u  ss:::::::::::::s      C:::::C                aaaaaaaaa:::::ass:::::::::::::s h::::::::::::::hh  
+  SS::::::SSSSStttttt:::::::tttttt               a::::atttttt:::::::tttttt    u::::u    u::::u  s::::::ssss:::::s     C:::::C                         a::::as::::::ssss:::::sh:::::::hhh::::::h 
+    SSS::::::::SS    t:::::t              aaaaaaa:::::a      t:::::t          u::::u    u::::u   s:::::s  ssssss      C:::::C                  aaaaaaa:::::a s:::::s  ssssss h::::::h   h::::::h
+       SSSSSS::::S   t:::::t            aa::::::::::::a      t:::::t          u::::u    u::::u     s::::::s           C:::::C                aa::::::::::::a   s::::::s      h:::::h     h:::::h
+            S:::::S  t:::::t           a::::aaaa::::::a      t:::::t          u::::u    u::::u        s::::::s        C:::::C               a::::aaaa::::::a      s::::::s   h:::::h     h:::::h
+            S:::::S  t:::::t    tttttta::::a    a:::::a      t:::::t    ttttttu:::::uuuu:::::u  ssssss   s:::::s       C:::::C       CCCCCCa::::a    a:::::assssss   s:::::s h:::::h     h:::::h
+SSSSSSS     S:::::S  t::::::tttt:::::ta::::a    a:::::a      t::::::tttt:::::tu:::::::::::::::uus:::::ssss::::::s       C:::::CCCCCCCC::::Ca::::a    a:::::as:::::ssss::::::sh:::::h     h:::::h
+S::::::SSSSSS:::::S  tt::::::::::::::ta:::::aaaa::::::a      tt::::::::::::::t u:::::::::::::::us::::::::::::::s         CC:::::::::::::::Ca:::::aaaa::::::as::::::::::::::s h:::::h     h:::::h
+S:::::::::::::::SS     tt:::::::::::tt a::::::::::aa:::a       tt:::::::::::tt  uu::::::::uu:::u s:::::::::::ss            CCC::::::::::::C a::::::::::aa:::as:::::::::::ss  h:::::h     h:::::h
+ SSSSSSSSSSSSSSS         ttttttttttt    aaaaaaaaaa  aaaa         ttttttttttt      uuuuuuuu  uuuu  sssssssssss                 CCCCCCCCCCCCC  aaaaaaaaaa  aaaa sssssssssss    hhhhhhh     hhhhhhh
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+                                                                                                                                                                                                
+
+          </font></pre>
+
+
+          <% 
+            i    = Inventory.new
+            gold =  i.select(5, html_table: true)
+          %>
+          <table style="width:50%" border="1" align="center">
+            <tr>
+              <th>ID</th>
+              <th>Amount USD</th>
+              <th>From</th>
+              <th>Status</th>
+              <th>Current Amount</th>
+            </tr>
+            <% gold.each do |c| %>
+            <tr>
+              <td><font color="white">  <%= c[0] %></font></td>
+              <td><font color="#1CE815"><%= c[1] %></font></td>
+              <td><font color="#1CE815"><%= c[2] %></font></td>
+              <td><font color="#1CE815"><%= c[3] %></font></td>
+              <td><font color="#1CE815"><%= c[4] %></font></td>
+            </tr>
+            <% end %>
+          </table>
+        </div>
+        <br><br>
+        <form action="/status" method="post">
+            <label for="change_status">Change Status:</label><br>
+            <input type="number" id="status_gold" name="status_gold" required="required" value="1"><br>
+            <label for="change_status">Sold Price:</label><br>
+            <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
+            <input type="submit" value="Submit">
+        </form><br><br>
+      </pre>
+    </center>
+  </font>
+</body>
