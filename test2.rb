@@ -335,6 +335,7 @@ class Inventory < Sql
     @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total += amount.shift }
     @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| a_total += amount.shift }
     @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total += amount.shift }
+    @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total += amount.shift }
     total << ["APMEX", a_total]
 
   total
@@ -543,7 +544,6 @@ module Silver
       ua = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.3'
       # use Duck Duck go to get the current price of gold. It will take the
       # amount of gold and use this api to get the current worth of the gold.
-      puts "am : #{amount}"
       if gram
        amount = amount.to_f / 28.34952
       end
@@ -552,7 +552,6 @@ module Silver
       
         r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
         json = JSON.parse(r_clean)['to'].shift
-        puts "mid: #{json['mid']}"
         json['mid']
     rescue => e
       puts "#{e}".red
@@ -613,7 +612,9 @@ module Silver
   def self.select_cash
     @silver.select(4) # Cash
   end
-
+  def self.select_gold
+    @silver.select(5) # GOLD
+  end
   def self.price_avg
     # Gets the avg price bought the different types of silver
     bar     = @silver.select_price_avg(1) # Bar

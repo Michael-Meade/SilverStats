@@ -494,13 +494,13 @@
             <input id="tab4" type="radio" name="tabs" />
             <label for="tab4">Cryptocurrency</label>
             <div id="tab-panel4" class="tab-panel">
-              <% status = ENV['CRYPTO'] %>
-              <% if status.eql?("dev.json") %>
+              <% status = 'prod.json' %>
+              <% if status.eql?("prod.json") %>
               <b><font color="red">DEV mode</b></font>
               <% else %>
               <b><font color="green">PROD mode</b></font>
               <% end %>
-              <% r = File.read(ENV['CRYPTO']) %>
+              <% r = File.read('prod.json') %>
               <% j = JSON.parse(r)   %>           
               <% 
                 xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s  
@@ -612,7 +612,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   g.data(data[0], data[1])
                 end
                 g.write(File.join("public", "silver_pie.png")) 
-                r = File.read(ENV['CRYPTO'])
+                r = File.read('prod.json')
                 j = JSON.parse(r)         
                 xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s
                 xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
