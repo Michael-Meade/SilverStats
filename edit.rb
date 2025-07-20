@@ -63,7 +63,7 @@ bull_meth = []
 end
 
 =end
-
+=begin
 c = []
 silver = Inventory.new
 cash =  silver.select(4, html_table: true) 
@@ -73,3 +73,20 @@ cash.each do |i|
   end
 end
 p c
+=end
+
+def edit_date(table)
+  @db.execute("select id, bought_date from #{table};").each do |id, date|
+    begin
+      new_date = Date.strptime(date,'%m/%d/%Y')
+      puts new_date
+      @db.execute("UPDATE #{table} SET bought_date = '#{new_date}' WHERE id='#{id}';")
+    rescue
+      puts "DATE: #{date}\n"
+    end
+  end
+  #@db.execute("UPDATE Bullion SET seller = 'APMEX' WHERE id='3';")
+end
+
+edit_date("Bullion")
+edit_date("Junk")

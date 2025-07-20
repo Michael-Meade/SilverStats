@@ -6,6 +6,7 @@ require 'terminal-table'
 require 'json'
 require 'httparty'
 require 'logger'
+require 'date'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
@@ -338,9 +339,44 @@ class Inventory < Sql
     @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total += amount.shift }
     total << ["APMEX", a_total]
 
+  Logger.info("List sites: #{total}")
   total
   end
 
+  def list_years
+    years_hash = {}
+    ids = [1,2,3]
+    ids.each do |id|
+      table = get_options(id)
+      @db.execute("select bought_date from #{table};").each do |date|
+        date = date.shift
+        year = Date.parse(date).year
+        if !years_hash.has_key?(year)
+            years_hash[year] = 1
+        else
+          years_hash[year] += 1
+        end
+      end
+    end
+  years_hash
+  end
+  def list_months
+    months_hash = {}
+    ids = [1,2,3]
+    ids.each do |id|
+      table = get_options(id)
+      @db.execute("select bought_date from #{table};").each do |date|
+        date = date.shift
+        month = Date.parse(date).month
+        if !months_hash.has_key?(month)
+            months_hash[month] = 1
+        else
+          months_hash[month] += 1
+        end
+      end
+    end
+  months_hash
+  end
   def select_total_oz(id)
     table = get_options(id) # Get the type of silver
     total_oz = 0
@@ -519,6 +555,7 @@ class Inventory < Sql
       Logger.error("Error with deleting the row with row_id: #{row_id} on the #{table} table")
     end
   end
+
 end
 
 module Silver
