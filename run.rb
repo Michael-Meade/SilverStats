@@ -16,7 +16,7 @@ require 'gruff'
 Dotenv.load('local.env')
 
 set :bind, '100.76.208.14'
-# set :port, 80
+set :port, 8080
 get '/' do
   erb :index
 end
