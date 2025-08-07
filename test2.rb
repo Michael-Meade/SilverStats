@@ -23,8 +23,8 @@ class Sql
       Logger.error("Error with creating Cash table: #{e}")
     end
     begin
-      %w[Bar Junk Bullion Gold].each do |table|
-        @db.execute("create table IF NOT EXISTS #{table} (id integer primary key autoincrement, bought_date text,
+      %w[Bar Junk Bullion Gold DNS].each do |table|
+        @db.execute("create table IF NOT EXISTS #{table} (id integer primary key, bought_date text,
             spot_price INTEGER,
             amount INTEGER,
             price real,
@@ -58,13 +58,17 @@ class Inventory < Sql
       'Cash'
     when 5
       'Gold'
+    when 6
+      # Do Not Sell
+      'DNS'
     end
   end
 
   def input_site(id, params)
     r = params
     table_name = get_options(id)
-    @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", nil, r['bought_date'],
+    uuid = SecureRandom.random_number(99999999)
+    @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", uuid, r['bought_date'],
                 r['spot_price'], r['amount'], r['price'], r['shipping'], r['total'], r['oz'], r['name'],
                 r['status'], r['sold_value'], r['seller'], r['method']
   end
@@ -312,31 +316,34 @@ class Inventory < Sql
     total = []
     # JM
     jm_total = 0
-    @db.execute("select total from Bullion where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'JMbullion';").each { |amount| jm_total += amount.shift }
+    @db.execute("select total from Bullion where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
     total << ["JMbullion", jm_total]
 
     # Golden State Mint
     gsm_total = 0
-    @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| gsm_total += amount.shift }
+
+    @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
     total << ["Gold State Mint", gsm_total ]
 
     # MoneyMetals
     mm_total = 0
-    @db.execute("select total from Bullion where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'MoneyMetals';").each { |amount| mm_total += amount.shift }
+
+    @db.execute("select total from Bullion where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
     total << ["MoneyMetals", mm_total]
 
     # APMEX
     a_total = 0
-    @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| a_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total += amount.shift }
-    @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total += amount.shift }
+
+    @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total = a_total.dup;a_total += amount.shift }
+    @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
     total << ["APMEX", a_total]
 
   Logger.info("List sites: #{total}")
@@ -569,8 +576,10 @@ module Silver
                        { headers: { 'User-Agent' => ua } }).body
       
         r_clean = r.gsub('ddg_spice_currency(', '').gsub(');', '').strip
-        json = JSON.parse(r_clean)['to'].shift
-        json['mid']
+        if !r_clean.nil?
+          json = JSON.parse(r_clean)['to'].shift
+          json['mid']
+        end
     rescue => e
       puts "#{e}".red
     end

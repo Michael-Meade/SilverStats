@@ -590,6 +590,10 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <button class="button button2" onclick="document.location='/gold'">gold</button>&nbsp&nbsp
                   <button class="button" onclick="document.location='/status_gold'">Change Status</button>&nbsp&nbsp
                   <button class="button button3" onclick="document.location='/delete_gold'">Delete Row</button><br><br>
+                  <h1>Do Not Sell List</h1>
+                  <button class="button button2" onclick="document.location='/dns'">DNS</button>&nbsp&nbsp
+                  <button class="button" onclick="document.location='/status_dns'">Change Status</button>&nbsp&nbsp
+                  <button class="button button3" onclick="document.location='/delete_dns'">Delete Row</button><br><br>
                 </center>
             </div>
           </li>
@@ -931,6 +935,50 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <td><font color="white">$<%= gold_spot_avg[0]    %></font></td>
                   <td><font color="white"><%=  gold_spot_avg[1]    %></font></td>
                 </tr>
+              </table>
+            </div>
+          </div>
+        </li>
+        <li>
+          <input id="tab10" type="radio" name="tabs" />
+          <label for="tab10">Do not sell list</label>
+          <div id="tab-panel10" class="tab-panel"><br><br>
+            <h1><center>Do not sell list</center></h1>
+              <h1><center>Select DNS List</center></h1> 
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>ID</th>
+                  <th>Bought Date</th>
+                  <th>Spot Price</th>
+                  <th>Amount</th>
+                  <th>Price</th>
+                  <th>Shipping</th>
+                  <th>Total</th>
+                  <th>OZ</th>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Sold Value</th>
+                  <th>Seller</th>
+                  <th>Method</th>
+                </tr>
+                <% bull =  @silver.select(6, html_table: true) %>
+                <% bull.each do |i| %>
+                  <tr>
+                    <td><font color="white"><%= i[0] %></font></td>
+                    <td><font color="white"><%= i[1] %></font></td>
+                    <td><font color="white"><%= i[2] %></font></td>
+                    <td><font color="white"><%= i[3] %></font></td>
+                    <td><font color="white"><%= i[4] %></font></td>
+                    <td><font color="white"><%= i[5] %></font></td>
+                    <td><font color="white"><%= i[6] %></font></td>
+                    <td><font color="white"><%= i[7] %></font></td>
+                    <td><font color="white"><%= i[8] %></font></td>
+                    <td><font color="white"><%= i[9] %></font></td>
+                    <td><font color="white"><%= i[10] %></font></td>
+                    <td><font color="white"><%= i[11] %></font></td>
+                    <td><font color="white"><%= i[12] %></font></td>
+                  </tr>
+                <% end %>
               </table>
             </div>
           </div>

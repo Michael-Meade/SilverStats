@@ -1,5 +1,6 @@
 
 require_relative 'test2'
+=begin
 silver = Inventory.new
 #gold    = silver.select_total_oz(5)
 
@@ -12,3 +13,4 @@ p t
 
 
 p silver.list_months
+=end

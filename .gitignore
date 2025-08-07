@@ -7,5 +7,5 @@ line2.rb
 *.json
 /public/*.png
 images/
-
+*.db
 test2 - Copy.db

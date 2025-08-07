@@ -15,13 +15,16 @@ require 'gruff'
 
 Dotenv.load('local.env')
 
-set :bind, '100.76.208.14'
+#set :bind, '0.0.0.0'
 set :port, 8080
 get '/' do
   erb :index
 end
 get '/bar' do
   erb :bar
+end
+get '/dns' do
+  erb :dns
 end
 post '/enter_bar' do
   i = Inventory.new
@@ -33,6 +36,13 @@ post '/enter_gold' do
   i = Inventory.new
   # 5: gold
   i.input_site(5, params)
+  erb :index
+end
+
+post '/enter_dns' do
+  i = Inventory.new
+  # 6: Do Not Sell
+  i.input_site(6, params)
   erb :index
 end
 get '/gold' do
@@ -131,6 +141,9 @@ end
 get '/delete_bar' do 
 	erb :delete_bar
 end
+get '/delete_dns' do 
+  erb :delete_dns
+end
 get '/delete_gold' do 
   erb :delete_gold
 end
@@ -200,6 +213,8 @@ post '/delete_row' do
     inv.delete_row(params["delete_cash"], 4)
   when "delete_gold"
     inv.delete_row(params["delete_gold"], 5)
+  when "delete_dns"
+    inv.delete_row(params["delete_dns"], 6)
 	end
 	erb :index
 end
