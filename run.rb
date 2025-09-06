@@ -29,7 +29,12 @@ end
 post '/enter_bar' do
   i = Inventory.new
   # 1: Bar
-  i.input_site(1, params)
+  quantity = params["quantity"].to_i
+  if quantity > 0
+    quantity.times { |ii| i.input_site(1, params) }
+  else
+    i.input_site(1, params)
+  end
   erb :index
 end
 post '/enter_gold' do
@@ -196,6 +201,9 @@ post '/status' do
   when 'status_gold'
     row_id = params['status_gold'].to_s
     inv.update_own(row_id, 5, website: true, sold_price: params['sold_price'].to_s)
+  when 'status_dns'
+    row_id = params["status_dns"].to_s
+    inv.update_own(row_id, 6, website: true, sold_price: params['sold_price'].to_s)
   end
   erb :index
 end

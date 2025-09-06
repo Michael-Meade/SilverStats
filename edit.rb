@@ -140,15 +140,6 @@ end
               method text);")
 =end
 
-t = [[3, "2023-10-24", 23.23, 1, 264.79, 0.0, 264.79, 5, "5 oz Cast Poured Silver Bar 9Fine Mint", "own", 0, "APMEX", "APMEX"], [4, "2022-11-12", 0, 1, 0.0, 0.0, 0.0, 1, "chicago", "own", 0, "Todd", "Reddit"], [5, "2025-03-18", 0, 4, 41.71, 0.0, 166.84, 4, "1 oz Silver bar Ben Franklin $100 bill design", "own", 0, "APMEX", "APMEX"], [6, "2025-02-16", 0, 3, 105.12, 6.95, 121.04, 3, "1  oz Den of Thieves Silver Bar BU", "own", 0, "Golden State Mint", "Golden State Mint"], [7, "2025-05-29", 33.41, 1, 48.9, 0.0, 48.9, 1, "New York State flag colorized .999", "own", 0, "MoneyMetals", "MoneyMetals"], [9, "2022-11-25", 21.73, 1, 27.31, 0.0, 27.31, 1, "1 oz Silver Bar - APMEX", "own", 0, "APMEX", "APMEX"], [10, "2025-07-11", 0, 1, 46.42, 0.0, 46.42, 1, "1 oz Silver bar - Ben Franklin $100 bill design", "own", 0, "APMEX", "APMEX"], [11, "2025-07-11", 0, 1, 46.42, 0.0, 46.42, 1, "1 oz Silver bar Ben Franklin $100 bill design", "own", 0, "APMEX", "APMEX"], [401618, "2023-10-24", 23.2, 5, 133.28, 9.95, 133.28, 5, "Apmex", "own", 1, "APMEX", "APMEX"], [528626, "2022-11-25", 21.73, 10, 27.31, 0.0, 274.0, 10, "1 OZ bar", "own", 1, "APMEX", "APMEX"]]
-
-t.each do |i|
-  uuid = SecureRandom.random_number(99999999)
-  i[0] = uuid
-  p i
-  p i.count
-    @db.execute("insert into Bar values (?,?,?,?,?,?,?,?,?,?,?,?,?)", i)
-end
 #change_id("Bar")
 
 =begin
