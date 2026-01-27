@@ -2,7 +2,7 @@
 
 require 'sinatra'
 require 'colorize'
-require_relative 'test2'
+require_relative 'lib'
 require 'securerandom'
 begin
   require 'CryptoPriceFinder'

@@ -63,7 +63,7 @@ Reads from JSON file. Can be set by using `EXPORT=stats2.json`
 
 
 ## Silver Stats
-Shows a nice table with the different types of silver amount in OZ and the amount in USD. 
+Shows a nice table with the different types of silver amount in OZ and the amount in USD.  IK that the math does not add up. Pretty sure I fixed it since taking screenshot.
 ![silver status](images/silver_stats.png)
 
 ## Running the website
@@ -75,4 +75,11 @@ Shows a nice table with the different types of silver amount in OZ and the amoun
 There are two crypto json files, `prod.json` and `dev.json`. There will be a text in the crypto tag with the color red if 
 `dev.json` is being used. If the `prod.json` is active it will show green text.
 
-### 
+### Install Gems
+
+```ruby
+gem install gruff
+gem install sqlite3
+gem install CryptoPriceFiner
+gem install sinatra
+```
