@@ -9,3 +9,10 @@ line2.rb
 images/
 *.db
 test2 - Copy.db
+.env
+*.db
+prod.json
+*.txt
+silver_total.txt
+*.txt
+edit.rb

@@ -146,6 +146,8 @@
             <option value="nh expo">
             <option value="Golden State Mint">
           </datalist><br>
+          <label for="quantity">Clone Input Count:</label><br>
+          <input type="number" id="quantity" name="quantity" min="0" value="0"><br>
           <input type="submit" value="Submit"><br><br>
         </form>
         <form>
@@ -156,11 +158,6 @@
           <input type="number" id="sold_price" name="sold_price" required="required" value="1"><br>
           <input type="submit" value="Submit">
         </form><br><br>
-        <form action="/delete_row" method="post">
-          <label for="delete_row">Delete Row:</label><br>
-          <input type="number" id="delete_bullion" name="delete_bullion" required="required" value="1"><br>
-          <input type="submit" value="Submit">  
-        </form>
       </center>
     </h1>
   </body>

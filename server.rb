@@ -12,11 +12,17 @@ end
 require 'json'
 require 'dotenv'
 require 'gruff'
+require 'digest'
+
 
 Dotenv.load('local.env')
 
 #set :bind, '0.0.0.0'
 set :port, 8080
+
+use Rack::Auth::Basic, "Restricted Area" do |username, password|
+    [username, password] == ['admin', ENV['PASS'] ]  
+end
 get '/' do
   erb :index
 end

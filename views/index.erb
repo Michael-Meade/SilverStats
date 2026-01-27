@@ -47,7 +47,7 @@
       <center><h1>Silver Stats</h1></center>
       <% @silver = Inventory.new %>
       <center>
-      <% 
+      <%
         bar     = @silver.select_total_oz(1) # 1: Bar
         junk    = @silver.select_total_oz(2) # 2: Junk
         bullion = @silver.select_total_oz(3) # 3: Bullion
@@ -58,8 +58,8 @@
         gold_amount    = Silver.get_gold_price(gold)      # Add amount of Gold to the current price of Gold 
         total          = bar + junk + bullion
         amount_all     = bar_amount + junk_amount + bullion_amount 
+      
       %>
-
       <table style="width:50%" border="1" align="center">
         <tr>
           <th>Type</th>
@@ -68,22 +68,22 @@
         </tr>
         <tr>
           <td><font color="white">Bar</font></td>
-          <td><%= @silver.select_price_avg(1).round(2) %> oz</td>
+          <td><%= @silver.select_total_oz(1).round(2) %> oz</td>
           <td><font color="#1CE815">$<%= Silver.get_silver_price(bar).round(2) %></font></td>
         </tr>
         <tr>
           <td><font color="white">Junk</font></td>
-          <td><%= @silver.select_price_avg(2).round(2) %> oz</td>
+          <td><%= @silver.select_total_oz(2).round(2) %> oz</td>
           <td><font color="#1CE815">$<%= Silver.get_silver_price(junk).round(2) %></font></td>
         </tr>
         <tr>
           <td><font color="white">Bullion</font></td>
-          <td><%= @silver.select_price_avg(3).round(2) %> oz</td>
+          <td><%= @silver.select_total_oz(3).round(2) %> oz</td>
           <td><font color="#1CE815">$<%= Silver.get_silver_price(bullion).round(2) %></font></td>
         </tr>
         <tr>
           <td><font color="white">Total</font></td>
-          <td><%= total.round(2) %> oz</td>
+          <td><%= total  .round(2) %> oz</td>
           <td><font color="#1CE815">$<%= Silver.get_silver_price(total).round(2) %></font></td>
         </tr>
       </table>

@@ -1,3 +1,7 @@
+# Script to edit things and manage
+# Ignore this
+#
+
 require 'sqlite3'
 require_relative 'test2'
 @db = SQLite3::Database.new 'test2.db' 
@@ -20,7 +24,7 @@ def delete_cash
 end
 
 def sellers
-
+  # ma
   total = 0
 
   @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total += amount.shift }
@@ -78,7 +82,8 @@ require 'securerandom'
 
 puts 
 def edit_date(table)
-  @db.execute("select id, bought_date from #{table};").each do |id, date|
+  # changes to make the date Month/Day/Year 
+    @db.execute("select id, bought_date from #{table};").each do |id, date|
     begin
       new_date = Date.strptime(date,'%m/%d/%Y')
       puts new_date
@@ -97,6 +102,7 @@ end
 #@db.execute('create table IF NOT EXISTS JunkTest (id integer primary key, amount integer, recipient text, status text, spent_amount integer);')
 
 def change_id(new_table)
+  # Testing the new ID systems
   t = @db.execute("select * from #{new_table}Test;")
   @db.execute("select * from Bullion;").each do |i|
     uuid = SecureRandom.random_number(99999999)
@@ -156,3 +162,4 @@ end
               seller text,
               method text);")
 =end
+@db.execute("drop table Bar")

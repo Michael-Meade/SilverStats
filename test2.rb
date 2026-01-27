@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+### out dated as of 1/27/2026
 require 'sqlite3'
 require 'colorize'
 require 'terminal-table'
@@ -10,12 +10,6 @@ require 'date'
 class Sql
   def initialize
     @db = SQLite3::Database.new 'test2.db'
-    #'test2.db'
-
-    # 'test2.db'
-    # test2.db
-    # 'test2.db'
-    # 'test_db.db'
     begin
       @db.execute('create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);')
     rescue StandardError => e
@@ -220,7 +214,9 @@ class Inventory < Sql
     table     = get_options(id)
     avg_total = 0
     count     = 0
+    avg_total = avg_total.dup
     @db.execute("select spot_price from #{table};").each do |row|
+      row = row.dup
       row = row.shift
       avg_total += row.to_i
       count += 1
@@ -278,6 +274,7 @@ class Inventory < Sql
     count = 0
     table = get_options(id) # Get the type of silver.
     @db.execute("select shipping from #{table};").each do |row|
+      row = row.dup
       row = row.shift
       total_shipping += row
       count += 1
@@ -305,6 +302,7 @@ class Inventory < Sql
     table = get_options(id) # Get the type of silver
     total_shipping = 0
     @db.execute("select shipping from #{table};").each do |row|
+      row = row.dup
       row = row.shift
       total_shipping += row
     end
@@ -356,6 +354,7 @@ class Inventory < Sql
     ids.each do |id|
       table = get_options(id)
       @db.execute("select bought_date from #{table};").each do |date|
+        date = date.dup
         date = date.shift
         year = Date.parse(date).year
         if !years_hash.has_key?(year)
@@ -373,6 +372,7 @@ class Inventory < Sql
     ids.each do |id|
       table = get_options(id)
       @db.execute("select bought_date from #{table};").each do |date|
+        date = date.dup
         date = date.shift
         month = Date.parse(date).month
         if !months_hash.has_key?(month)
@@ -389,6 +389,7 @@ class Inventory < Sql
     total_oz = 0
 
     @db.execute("select oz from #{table} where status = 'own';").each do |row|
+      row = row.dup
       row = row.shift
       total_oz += row
     end
@@ -420,6 +421,7 @@ class Inventory < Sql
     table = get_options(id)
     meth = {}
     @db.execute("select method from #{table};").each do |row|
+      row = row.dup
       # Checks to see if meth variable has the key
       if !meth.key?(row[0])
         name = row[0]
@@ -441,6 +443,7 @@ class Inventory < Sql
     # gets type of silver via id
     table = get_options(id)
     @db.execute("select status from #{table} where id = '#{row_id}';").each do |row|
+      row = row.dup
       row = row.shift
       if row.eql?('own')
         # if own then changes it to sold
@@ -481,6 +484,7 @@ class Inventory < Sql
     # For example if sold it will change to own, if own it will change to sold
     @db.execute("select status from Cash where id = '#{row_id}';").each do |row|
       row = row.shift
+      row = row.dup
       if row.eql?('own')
         # Changes own to spent
         @db.execute("UPDATE Cash SET status = 'spent' WHERE id='#{row_id}';")
@@ -516,6 +520,7 @@ class Inventory < Sql
     table = get_options(id) # get the type of silver
     total = 0
     @db.execute("select sold_value from #{table} where status='sold';").each do |sold|
+      sold = sold.dup
       # removes [] from the sold variable
       sold = sold.shift
       total += sold.to_i
@@ -529,6 +534,7 @@ class Inventory < Sql
     table    = get_options(id)
     total_oz = 0 # used to total the total oz
     @db.execute("select OZ from #{table} where status='sold'").each do |oz|
+      oz = oz.dup
       oz = oz.shift
       total_oz += oz.to_i
     end
@@ -674,6 +680,7 @@ module Silver
     # gets the count of franklin half dollars
     count = 0
     @silver.select_franklins.each do |c|
+      c = c.dup
       c = c.shift
       count += c
     end
@@ -829,6 +836,7 @@ module Silver
     total = 0
     count = 0
     File.readlines('silver_total.txt').each do |line|
+      line = line.dup
       line = line.split(' ')
       count += 1
       total += line[1].to_i
