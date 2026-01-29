@@ -63,7 +63,7 @@ Reads from JSON file. Can be set by using `EXPORT=stats2.json`
 
 
 ## Silver Stats
-Shows a nice table with the different types of silver amount in OZ and the amount in USD.  IK that the math does not add up. Pretty sure I fixed it since taking screenshot.
+
 ![silver status](images/silver_stats.png)
 
 ## Running the website
@@ -82,4 +82,8 @@ gem install gruff
 gem install sqlite3
 gem install CryptoPriceFiner
 gem install sinatra
+gem install httparty
+gem install logger
+gem install terminal-table
+gem install colorize
 ```

@@ -4,6 +4,8 @@ silver_total.txt
 logs.txt
 line.rb
 line2.rb
+app.log
+*.log
 *.json
 /public/*.png
 images/

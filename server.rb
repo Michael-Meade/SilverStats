@@ -19,6 +19,12 @@ Dotenv.load('local.env')
 
 #set :bind, '0.0.0.0'
 set :port, 8080
+use Rack::Logger
+configure do
+  class ::Logger; alias_method :write, :<<; end
+  use Rack::CommonLogger, Logger.new('app.log')
+end
+
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ['admin', ENV['PASS'] ]  
