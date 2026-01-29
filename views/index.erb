@@ -6,14 +6,7 @@
       th { color: #FF0000; text-align: center;}
       table, th, td { border: 1px solid yellow; border-collapse: collapse; font-size: 20}
       tr:nth-child(even) {background-color: #304254;}
-      .tabs {
-        list-style: none; 
-        position: relative; 
-        margin: 0;
-        padding: 0;
-        width: 100%;  
-        font-family: sans-serif
-      }
+      .tabs { list-style: none; position: relative; margin: 0; padding: 0; width: 100%; font-family: sans-serif}
       .tabs li { display: inline-block; }
       .tabs input[type="radio"] { display: none; }
       .tabs label { display: block; cursor: pointer; padding: 10px 15px; border: 2px solid yellow; border-bottom: 0; border-radius: 3px 3px 0 0; }
@@ -21,23 +14,10 @@
       .tabs [id^="tab"]:checked + label { background-color: red; color: #fff; }
       .tabs [id^="tab"]:checked ~ [id^="tab-panel"] { display: block; }
       img { width: 25%; height: auto; }
-      .button {
-        background-color: #04AA6D; /* Green */
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-      }
-      .button1 {background-color: #04AA6D;} /* Green */
-      .button2 {background-color: #008CBA;} /* Blue */
-      .button3 {background-color: #f44336;} /* Red */
-      .button4 {background-color: #e7e7e7; color: black;} /* Gray */
-      .button5 {background-color: #555555;} /* Black */
+      .button {background-color: #04AA6D; border: none; color: white; padding: 15px 32px; text-align: center;text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;}
+      .status {background-color: #04AA6D;} /* Green */
+      .type {background-color: #008CBA;} /* Blue */
+      .delete {background-color: #f44336;} /* Red */
     </style>
   </head>
   <body>
@@ -212,12 +192,6 @@
                   <td><font color="white"><%=  bars_spot_avg[1]    %></font></td>
                 </tr>
               </table>
-              <% status = ENV['DB'] %>
-              <% if !status.eql?("test2.db") %>
-              <b><font color="red">DEV mode</b></font>
-              <% else %>
-              <b><font color="green">PROD mode</b></font>
-              <% end %>
               <br><br>
             </div>
           </li>
@@ -494,19 +468,13 @@
             <input id="tab4" type="radio" name="tabs" />
             <label for="tab4">Cryptocurrency</label>
             <div id="tab-panel4" class="tab-panel">
-              <% status = 'prod.json' %>
-              <% if status.eql?("prod.json") %>
-              <b><font color="red">DEV mode</b></font>
-              <% else %>
-              <b><font color="green">PROD mode</b></font>
-              <% end %>
               <% r = File.read('prod.json') %>
               <% j = JSON.parse(r)   %>           
               <% 
                 xmr   =  CryptoPriceFinder.monero(j["monero"]).round(2).to_s  
                 xlm   =  CryptoPriceFinder.stellar(j["stellar"]).round(2).to_s
                 btc   =  CryptoPriceFinder.bitcoin(j["bitcoin"]).round(2).to_s
-                total = xmr.to_i + xlm.to_i + btc.to_i
+                total = xmr.to_f + xlm.to_f + btc.to_f
               %>
               <br><br>
               <table style="width:50%" border="1" align="center">
@@ -569,31 +537,31 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 
                 <center>
                   <h1>Bars</h1>
-                  <button class="button button2" onclick="document.location='/bar'">Bar</button>&nbsp&nbsp
-                  <button class="button" onclick="document.location='/status_bar'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_bar'">Delete Row</button><br><br>
+                  <button class="button type" onclick="document.location='/bar'">Bar</button>&nbsp&nbsp
+                  <button class="button status" onclick="document.location='/status_bar'">Change Status</button>&nbsp&nbsp
+                  <button class="button delete" onclick="document.location='/delete_bar'">Delete Row</button><br><br>
                   <h1>Junk</h1>
-                  <button class="button button2" onclick="document.location='/junk'">Junk</button>&nbsp&nbsp
+                  <button class="button type" onclick="document.location='/junk'">Junk</button>&nbsp&nbsp
                   <button class="button" onclick="document.location='/status_junk'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_junk'">Delete Row</button><br><br>
+                  <button class="button delete" onclick="document.location='/delete_junk'">Delete Row</button><br><br>
                   <h1>Bullion</h1>
-                  <button class="button button2" onclick="document.location='/bullion'">Bullion</button>&nbsp&nbsp
-                  <button class="button" onclick="document.location='/status_bullion'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
+                  <button class="button type" onclick="document.location='/bullion'">Bullion</button>&nbsp&nbsp
+                  <button class="button status" onclick="document.location='/status_bullion'">Change Status</button>&nbsp&nbsp
+                  <button class="button delete" onclick="document.location='/delete_bullion'">Delete Row</button><br><br>
                   <h1>Crypto</h1>
-                  <button class="button button2" onclick="document.location='/crypto'">Crypto</button>&nbsp&nbsp
+                  <button class="button type" onclick="document.location='/crypto'">Crypto</button>&nbsp&nbsp
                   <h1>Cash</h1>
-                  <button class="button button2" onclick="document.location='/cash'">Cash</button>&nbsp&nbsp
+                  <button class="button type" onclick="document.location='/cash'">Cash</button>&nbsp&nbsp
                   <button class="button" onclick="document.location='/status_cash'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_cash'">Delete Row</button><br><br>
+                  <button class="button delete" onclick="document.location='/delete_cash'">Delete Row</button><br><br>
                   <h1>Gold</h1>
-                  <button class="button button2" onclick="document.location='/gold'">gold</button>&nbsp&nbsp
-                  <button class="button" onclick="document.location='/status_gold'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_gold'">Delete Row</button><br><br>
+                  <button class="button type" onclick="document.location='/gold'">gold</button>&nbsp&nbsp
+                  <button class="button status" onclick="document.location='/status_gold'">Change Status</button>&nbsp&nbsp
+                  <button class="button delete" onclick="document.location='/delete_gold'">Delete Row</button><br><br>
                   <h1>Do Not Sell List</h1>
-                  <button class="button button2" onclick="document.location='/dns'">DNS</button>&nbsp&nbsp
-                  <button class="button" onclick="document.location='/status_dns'">Change Status</button>&nbsp&nbsp
-                  <button class="button button3" onclick="document.location='/delete_dns'">Delete Row</button><br><br>
+                  <button class="button type" onclick="document.location='/dns'">DNS</button>&nbsp&nbsp
+                  <button class="button status" onclick="document.location='/status_dns'">Change Status</button>&nbsp&nbsp
+                  <button class="button delete" onclick="document.location='/delete_dns'">Delete Row</button><br><br>
                 </center>
             </div>
           </li>
