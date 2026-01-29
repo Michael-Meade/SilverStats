@@ -9,7 +9,8 @@ require 'logger'
 require 'date'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test2.db'
+    @db = SQLite3::Database.new 'test_db.db' 
+    #'test2.db'
     begin
       @db.execute('create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);')
     rescue StandardError => e
@@ -62,9 +63,32 @@ class Inventory < Sql
     r = params
     table_name = get_options(id)
     uuid = SecureRandom.random_number(99999999)
-    @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", uuid, r['bought_date'],
-                r['spot_price'], r['amount'], r['price'], r['shipping'], r['total'], r['oz'], r['name'],
-                r['status'], r['sold_value'], r['seller'], r['method']
+    # if equals junk
+    if id.eql?(2)
+      begin 
+        new_oz = r['oz'].to_f * r["amount"].to_f
+
+      rescue => e
+        Logger.info("ERROR IN Junk Silver adding amount to oz.")
+        new_oz = r['oz']
+      end
+        data = uuid, r['bought_date'], r['spot_price'], r['amount'], r['price'], r['shipping'],
+        r['total'], new_oz, r['name'], r['status'], r['sold_value'], r['seller'], r['method']
+
+
+        @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", data
+        
+        Logger.info("INSERT INTO JUNK: #{data}.")
+    else
+      # All the other types get passed here.
+      data = uuid, r['bought_date'], r['spot_price'], r['amount'], r['price'],
+             r['shipping'], r['total'], r['oz'], r['name'], r['status'], r['sold_value'],
+             r['seller'], r['method']
+
+      @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", data
+        
+      Logger.info("INSERT INTO JUNK: #{data}.")
+    end
   end
 
   def input(id)
@@ -357,7 +381,7 @@ class Inventory < Sql
         date = date.dup
         date = date.shift
         year = Date.parse(date).year
-        if !years_hash.has_key?(year)
+        unless years_hash.has_key?(year)
             years_hash[year] = 1
         else
           years_hash[year] += 1
@@ -375,7 +399,7 @@ class Inventory < Sql
         date = date.dup
         date = date.shift
         month = Date.parse(date).month
-        if !months_hash.has_key?(month)
+        unless months_hash.has_key?(month)
             months_hash[month] = 1
         else
           months_hash[month] += 1
@@ -423,7 +447,7 @@ class Inventory < Sql
     @db.execute("select method from #{table};").each do |row|
       row = row.dup
       # Checks to see if meth variable has the key
-      if !meth.key?(row[0])
+      unless meth.key?(row[0])
         name = row[0]
         # gives the method the value of 1
         meth[name] = 1
@@ -548,7 +572,7 @@ class Inventory < Sql
     table = get_options(id)
     Logger.info("Deleting the row with row_id: #{row_id} on the #{table} table")
     begin
-      if !row_id.count.to_i.eql?(1)
+      unless row_id.count.to_i.eql?(1)
         #check if `row_id` element count is not 1
         row_id.each do |id|
           @db.execute("delete from #{table} where id ='#{id}';")

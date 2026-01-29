@@ -3,8 +3,9 @@
 #
 
 require 'sqlite3'
-require_relative 'test2'
-@db = SQLite3::Database.new 'test2.db' 
+require_relative 'lib'
+@db = SQLite3::Database.new 'test_db.db'
+#'test2.db' 
 #'test2.db'
 #@db.execute("UPDATE Bar SET method = 'APMEX' WHERE id='5';")
 #@db.execute("UPDATE Bar SET seller = 'APMEX' WHERE id='5';")
@@ -86,17 +87,20 @@ def edit_date(table)
     @db.execute("select id, bought_date from #{table};").each do |id, date|
     begin
       new_date = Date.strptime(date,'%m/%d/%Y')
-      puts new_date
+      #puts new_date
       @db.execute("UPDATE #{table} SET bought_date = '#{new_date}' WHERE id='#{id}';")
-    rescue
+    rescue => e
+      
       puts "DATE: #{date}\n"
+      @db.execute("delete from #{table} where id ='#{id}';")
     end
   end
   #@db.execute("UPDATE Bullion SET seller = 'APMEX' WHERE id='3';")
 end
 
-#edit_date("Bullion")
-#edit_date("Junk")
+edit_date("Bullion")
+edit_date("Junk")
+edit_date("Bar")
 #@db.execute('create table IF NOT EXISTS CashTest (id integer primary key, amount integer, recipient text, status text, spent_amount integer);')
 
 #@db.execute('create table IF NOT EXISTS JunkTest (id integer primary key, amount integer, recipient text, status text, spent_amount integer);')
@@ -162,4 +166,4 @@ end
               seller text,
               method text);")
 =end
-@db.execute("drop table Bar")
+#@db.execute("drop table Bar")
