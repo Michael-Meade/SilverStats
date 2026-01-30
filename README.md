@@ -49,7 +49,7 @@ enter the row id which will delete the row.
 ![Deleting row](images/delete_row.png)
 
 ## Entering Silver
-The enter silver page has three buttons, one to change status, delete a certain row and enter silver.
+The enter silver page has three buttons, one to change status, delete a certain row and enter silver. They are color coded as your can see below.
 ![Entering Silver](images/enter_silver.png)
 
 
@@ -77,13 +77,26 @@ There are two crypto json files, `prod.json` and `dev.json`. There will be a tex
 
 ### Install Gems
 
+Note that sqlite3 can sometimes be a pain to install. I have trouble in the past. Also gruff uses `rmagick` which in turn uses `ImageMagick`. Which can be a pain to install correctly. 
+
+Install magick: `sudo apt-get install libmagickwand-dev`
+I had to install this too: `sudo apt update && sudo apt install build-essential   `
+
+```ruby
+sudo apt-get install sqlite3
+```
+
 ```ruby
 gem install gruff
 gem install sqlite3
 gem install CryptoPriceFiner
 gem install sinatra
 gem install httparty
-gem install logger
+gem install rack -v 3.1.12
+gem install dotenv
+gem install logger -v 1.5.3
 gem install terminal-table
 gem install colorize
+gem install rackup puma
+
 ```

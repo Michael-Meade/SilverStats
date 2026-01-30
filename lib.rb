@@ -9,7 +9,8 @@ require 'logger'
 require 'date'
 class Sql
   def initialize
-    @db = SQLite3::Database.new 'test_db.db' 
+    @db = SQLite3::Database.new 'test2.db'
+    #'test_db.db' 
     #'test2.db'
     begin
       @db.execute('create table IF NOT EXISTS Cash (id integer primary key autoincrement, amount integer, recipient text, status text, spent_amount integer);')
