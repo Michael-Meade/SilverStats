@@ -61,21 +61,29 @@ class Inventory < Sql
   end
 
   def input_site(id, params)
+    # the `params` is the hash that is passed on when the user submits the new pieces of silvers.
     r = params
+    # This will use the `id` variable to get the name of the table. 
     table_name = get_options(id)
+    # creates a random number usin the securerandom gem. The `id` of the uuid should 
+    # be eight digits long
     uuid = SecureRandom.random_number(99999999)
     # if equals junk
     if id.eql?(2)
       begin 
+        # this part is used for junk silver. It will take the given oz and mutiply it by the amount. 
+        # This is to get the total amount of silver
         new_oz = r['oz'].to_f * r["amount"].to_f
 
       rescue => e
         Logger.info("ERROR IN Junk Silver adding amount to oz.")
         new_oz = r['oz']
       end
+
         data = uuid, r['bought_date'], r['spot_price'], r['amount'], r['price'], r['shipping'],
         r['total'], new_oz, r['name'], r['status'], r['sold_value'], r['seller'], r['method']
 
+        # addds the data to the table
 
         @db.execute "insert into #{table_name} values (?,?,?,?,?,?,?,?,?,?,?,?,?)", data
         
@@ -93,6 +101,8 @@ class Inventory < Sql
   end
 
   def input(id)
+
+    # Gets the table name by the `id` parameters. 
     table_name = get_options(id)
     r = []
     ['Bought Date',
@@ -220,23 +230,29 @@ class Inventory < Sql
   end
 
   def input_cash(data, html: false)
+    # adds to the cash table. Takes a variable named `data`. The `data` variable should have the following keys:
+    #     - cash_amount
+    #     - cash_from
+    #     - cash_current
     if html.eql?(false)
       print('Enter amount of Cash: ')
       cash_amount = gets.chomp
       print('Enter from who: ')
       from = gets.chomp
       @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', 0
-      Logger.info("Entered #{cash_amount} from #{from}")
+      Logger.info("Entered #{cash_amount} from #{data}")
     else
       cash_amount    = data["cash_amount"]
       from           = data["cash_from"]
       current_amount = data["cash_current"]
       @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', current_amount
-      Logger.info("Entered #{cash_amount} from #{from}")
+      Logger.info("Entered #{cash_amount} from #{data}")
     end
   end
   def spot_avg(id)
-    table     = get_options(id)
+    # Gets the spot average from all the data in the tables. 
+    # It takes the spot price that was entered in the table and find the average.
+    table     = get_options(id) # Get the type of silver
     avg_total = 0
     count     = 0
     avg_total = avg_total.dup
@@ -246,28 +262,38 @@ class Inventory < Sql
       avg_total += row.to_i
       count += 1
     end
+    # if the `avg_total` is zero the code will return an array with the first element (0 position) to be
+    # the 0 and the second element ( 1 position ) will be the count
     begin
       if avg_total.to_i.eql?(0)
+        Logger.info("The avg_total was: #{[0, count]}")
         return [ 0, count]
       else
+        # gets the average by diving the `avg_total` by the `count`
         avg = avg_total / count
+        Logger.info("The avg_total was: #{[avg, count]}")
         return [ avg, count ]
       end
     rescue => e
       puts "#{e}"
+      Logger.info("ERROR with #{$0} with the spot_avg")
     end
-  
+    
   end
   def select_price_avg(id, html_table: false)
+    # This will take the prices paid for the silver and fnd the average. The `id` variable
+    # is the id of the table. ( junk, bullion, bars)
     count = 0
     total = 0
     table = get_options(id) # Get the type of silver
     @db.execute("select price from #{table};").each do |row|
+      row = row.dup
       row = row.shift
       total += row
       count += 1
     end
-    total / count # get the average
+    avg = total / count  # get the average
+    Logger.error("select_price_avg in #{$0} in #{id} table. data: #{avg}")
   rescue StandardError => e
     puts "ERROR: #{e}".red
     Logger.error("Error: #{e} \n table: #{table}")
@@ -275,26 +301,37 @@ class Inventory < Sql
 
   def select(id, html_table: false)
     table = get_options(id) # Get the type of silver
-    if !html_table
+
+    # Checks if the `html_table` variable is false. Which means that it will
+    # check to see if it for the web site or the terminal part. 
+    unless html_table
       begin
         @db.execute("select * from #{table} ;").each do |i|
           puts i.join(' | ')
         end
+        Logger.error("Selecting data from #{table}...")
       rescue SQLite3::SQLException => e
         puts "ERROR: #{e}".red
         Logger.error("Error with selecting table: #{table}")
         Logger.error("error: #{e}")
       end
     else
+      # `html_table` is set to true so it will store the extracted data into an array
+      # named `html_out`.
+
+      # used by the ERB to display the data.
       html_out = []
       @db.execute("select * from #{table} ;").each do |i|
         html_out << i
       end
+      Logger.error("Selecting data from #{table}...")
       html_out
     end
   end
 
   def shipping_avg(id)
+    # Gets the shipping average from all the pieces of silver. 
+    # the `id` is to get the table name. 
     total_shipping = 0
     count = 0
     table = get_options(id) # Get the type of silver.
@@ -324,6 +361,7 @@ class Inventory < Sql
   end
 
   def shipping_total(id)
+    # Queries the tables adding up all the shipping price to find the total paid. 
     table = get_options(id) # Get the type of silver
     total_shipping = 0
     @db.execute("select shipping from #{table};").each do |row|
@@ -334,12 +372,13 @@ class Inventory < Sql
     Logger.info("Shipping total #{table}: #{total_shipping}")
     total_shipping
   end
-  
+
   def list_sellers
+    # This will get the amount of purchases made by the seller. 
     total = []
     # JM
     jm_total = 0
-    @db.execute("select total from Bullion where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
+    @db.execute("select total from Bullion where seller = 'JMbullion';").each { |amount| amount = amount.dup; jm_total = jm_total.dup; jm_total += amount.shift }
     @db.execute("select total from Bar where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
     @db.execute("select total from Junk where seller = 'JMbullion';").each { |amount| jm_total = jm_total.dup; jm_total += amount.shift }
     total << ["JMbullion", jm_total]
@@ -347,7 +386,7 @@ class Inventory < Sql
     # Golden State Mint
     gsm_total = 0
 
-    @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
+    @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| amount = amount.dup; gsm_total = gsm_total.dup; gsm_total += amount.shift }
     @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
     @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
     total << ["Gold State Mint", gsm_total ]
@@ -364,7 +403,7 @@ class Inventory < Sql
     a_total = 0
 
     @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| amount = amount.dup; a_total = a_total.dup; a_total += amount.shift }
     @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total = a_total.dup;a_total += amount.shift }
     @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
     total << ["APMEX", a_total]
@@ -374,9 +413,14 @@ class Inventory < Sql
   end
 
   def list_years
+    # This part of the code will go through the databases
+    # and get the number of times a piece was bought during the years.
     years_hash = {}
+    # the IDs of the differet types of silver
+    # Junk, Bullion, Bars
     ids = [1,2,3]
     ids.each do |id|
+      # gets the table name by the `id`.
       table = get_options(id)
       @db.execute("select bought_date from #{table};").each do |date|
         date = date.dup
@@ -389,10 +433,15 @@ class Inventory < Sql
         end
       end
     end
+    Logger.info("table -> #{table}: List years: #{year_hash}")
   years_hash
   end
   def list_months
+    # This part of the code will go through the databases
+    # and get the number of times a piece was bought during each months.
     months_hash = {}
+    # the IDs of the differet types of silver
+    # Junk, Bullion, Bars
     ids = [1,2,3]
     ids.each do |id|
       table = get_options(id)
@@ -407,10 +456,12 @@ class Inventory < Sql
         end
       end
     end
+    Logger.info("table -> #{table}: List years: #{months_hash}")
   months_hash
   end
   def select_total_oz(id)
-    table = get_options(id) # Get the type of silver
+    # The purpose of this method is to get the total OZ. 
+    table = get_options(id) # Get the type of silver ( junk, bullion, bars )
     total_oz = 0
 
     @db.execute("select oz from #{table} where status = 'own';").each do |row|
@@ -461,6 +512,7 @@ class Inventory < Sql
     meth.each do |k, v|
       methods_array << [k, v]
     end
+    Logger.info("Select Method for #{table}: #{methods_array}")
     methods_array
   end
 
@@ -519,6 +571,8 @@ class Inventory < Sql
         @db.execute("UPDATE Cash SET status = 'own' WHERE id='#{row_id}';")
         Logger.info("Cash Table: Changed from 'spent' to 'own' on row: #{row_id}")
       end
+      # This checks to see if the variable `website` is equal to false. 
+      # this is used when using the termrinal part of this project.
       if website.eql?(false)
         print('Enter Spent Amount: ')
         # Update the spent amount
@@ -526,10 +580,16 @@ class Inventory < Sql
         @db.execute("UPDATE Cash SET spent_amount = '#{spent_amount}' WHERE id='#{row_id}';")
         Logger.info("Updated cash table. Updated 'spent_amount' with #{spent_amount} with row_id: #{row_id}")
       else
+        # The `website` variable is set to true so it will not print the output in the terminal.
+        # It will return the data that is used in the erb to display.
         @db.execute("select spent_amount from Cash where id = '#{row_id}';").each do |row|
+          row = row.dup 
           row = row.shift
           @current_amount = row
         end
+        # Checks if `spent_amount` is less than or equal to `@current_amount`
+        # and will subtract the `spent_amount` from the `spent_amount` and create a variable named
+        # `new_amount. It will then update the row in the Cash table. 
         if spent_amount.to_f <= @current_amount.to_f
           new_amount = @current_amount.to_f - spent_amount.to_f
           @db.execute("UPDATE Cash SET spent_amount = '#{new_amount}' WHERE id='#{row_id}';")
@@ -561,6 +621,7 @@ class Inventory < Sql
     @db.execute("select OZ from #{table} where status='sold'").each do |oz|
       oz = oz.dup
       oz = oz.shift
+      # adds the `oz` variable to the `total_oz` variables
       total_oz += oz.to_i
     end
     Logger.info("Getting sold OZ total from the table #{table} --> #{total_oz} oz")
@@ -568,6 +629,10 @@ class Inventory < Sql
   end
 
   def delete_row(row_id, id)
+    # Delete a certain row in the tables. It can  take multiple row_ids
+    # row_id = is the row that will be deleted
+    # id     = the ID of the table ( junk, bar, bullion)
+
     row_id = row_id.split(',')
     # Get the type of silver
     table = get_options(id)
@@ -593,7 +658,37 @@ class Inventory < Sql
       Logger.error("Error with deleting the row with row_id: #{row_id} on the #{table} table")
     end
   end
+  def get_pieces_count
+    # The purpose of this part of code is to get the amount of each type of
+    # silver ( junk, bullion, bars ) used to audit the count to make sure
+    # it the same as the one owned by me.
 
+    junk_count    = 0
+    bar_count     = 0
+    bullion_count = 0
+
+    @db.execute("select amount from Junk where status = 'own';").each do |junk_amount|
+      junk_amount = junk_amount.shift
+      junk_amount = junk_amount.dup
+      junk_count += junk_amount.to_i
+    end
+
+    @db.execute("select amount from Bar where status = 'own';").each do |bar_amount|
+      bar_amount = bar_amount.shift
+      bar_amount = bar_amount.dup
+      bar_count += bar_amount
+    end
+
+    @db.execute("select amount from Bullion where status = 'own';").each do |bullion_amount|
+      bullion_amount = bullion_amount.shift
+      bullion_amount = bullion_amount.dup
+      bullion_count += bullion_amount
+    end
+    Logger.info("Total physical amount of pieces: Junk: #{junk} Bar:#{bar} Bullion: #{bull}")
+    Logger.info("Total physical amount of pieces: total: #{junk + bar + bull}")
+    #           0          1              2
+    return [junk_count, bar_count, bullion_count]
+  end
 end
 
 module Silver
@@ -645,13 +740,14 @@ module Silver
   end
 
   def self.save_total_oz
+    # saves total oz from all the different tables into a file named `silver_total.txt`.
     bar     = @silver.select_total_oz(1) # 1: Bar
     junk    = @silver.select_total_oz(2) # 2: Junk
     bullion = @silver.select_total_oz(3) # 3: Bullion
     bar_amount     = get_silver_price(bar)     # Add amount of bars to the current price of Silver
     junk_amount    = get_silver_price(junk)    # Add amount of Junk to the current price of Silver
     bullion_amount = get_silver_price(bullion) # Add amount of Bullion to the current price of Silver
-    amount_all = bar_amount + junk_amount + bullion_amount # add bar, junk and bullion total together ( $USD )
+    amount_all = bar_amount + junk_amount + bullion_amount # adds bar, junk and bullion total together ( $USD )
     time = Time.new
     date = time.strftime('%m/%d/%Y')
     puts "Amount: $#{amount_all}"
@@ -659,6 +755,9 @@ module Silver
   end
 
   def self.total_oz
+    # This queries the tables to get the total oz. It will take the data 
+    # and save them in an array named `rows`. It will take that array and use the 
+    # `print_table` method to print out the data in a nice table in the terminal. 
     bar     = @silver.select_total_oz(1) # 1: Bar
     junk    = @silver.select_total_oz(2) # 2: Junk
     bullion = @silver.select_total_oz(3) # 3: Bullion
@@ -839,7 +938,7 @@ module Silver
   end
 
   def self.delete_row_by_id(row_id, id)
-    # row_id is the id of row
+    # row_id is the id of row that will be deleted. 
     # id is the table id ( Bars, Junk, Bullion )
     @silver.delete_row(row_id, id)
   end
@@ -860,6 +959,7 @@ module Silver
     # gets the average of silver from the file "silver_total.txt"
     total = 0
     count = 0
+    # reads each lines in the file and does math to get the average.
     File.readlines('silver_total.txt').each do |line|
       line = line.dup
       line = line.split(' ')

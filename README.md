@@ -35,34 +35,34 @@ get how much the amount of silver is worth in USD. <Br>
 This will back up the db by saving a copy of it with a new name. <br>
 ![BackUp DB](images/backup_db.png)
 
-### WEBSITE
+## WEBSITE
 
-## Change Status
+### Change Status
 The status can either be `sold` or `own`. By entering the row ID it will automatically change the status via the current status. Like for example,
 if the status is `sold` it will change to `own` and if it set to `own` it will change to `sold`.
 ![Change status](images/change_status.png)
 
-## Delete Row
+### Delete Row
 
 This page will display a nice html table that includes the row id. The user will
 enter the row id which will delete the row. 
 ![Deleting row](images/delete_row.png)
 
-## Entering Silver
+### Entering Silver
 The enter silver page has three buttons, one to change status, delete a certain row and enter silver. They are color coded as your can see below.
 ![Entering Silver](images/enter_silver.png)
 
 
-## Pie Charts
+### Pie Charts
 Shows the percentage of different types of silver and cryptocurrency. 
 ![Pie charts showing the types of silver](images/pie_chart.png)
 
-## Cryptocurrency table
+### Cryptocurrency table
 Reads from JSON file. Can be set by using `EXPORT=stats2.json`
 ![crypto table](images/crypto.png)
 
 
-## Silver Stats
+### Silver Stats
 
 ![silver status](images/silver_stats.png)
 
@@ -79,7 +79,9 @@ There are two crypto json files, `prod.json` and `dev.json`. There will be a tex
 
 Note that sqlite3 can sometimes be a pain to install. I have trouble in the past. Also gruff uses `rmagick` which in turn uses `ImageMagick`. Which can be a pain to install correctly. 
 
-Install magick: `sudo apt-get install libmagickwand-dev`
+
+Install magick: `sudo apt-get install libmagickwand-dev`.
+
 I had to install this too: `sudo apt update && sudo apt install build-essential   `
 
 ```ruby
@@ -100,3 +102,9 @@ gem install colorize
 gem install rackup puma
 
 ```
+
+### Set password
+You will need to export a var named PASS to be able to get to the page. The username's is `admin`.
+Use this: `export PASS='Y0urPa$sw0rdzz!1989'`
+
+Might want to put this in your `.bashrc` file. Use `source .bashrc` after making the change to the file.

@@ -18,6 +18,8 @@
       .status {background-color: #04AA6D;} /* Green */
       .type {background-color: #008CBA;} /* Blue */
       .delete {background-color: #f44336;} /* Red */
+
+      hr {border: none; border-top: 3px double yellow; color: yellow; overflow: visible; text-align: center; height: 5px;}
     </style>
   </head>
   <body>
@@ -577,9 +579,9 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 bull = own[4]
 
                 pie = [["Bars", bar], ["Junk", junk], ["Bullion", bull]]
-                
+
                 g = Gruff::Pie.new
-                g.title = 'Silver Pie Chart'
+                g.title = 'Type of Silver Pie Chart by oz'
                 pie.each do |data|
                   g.data(data[0], data[1])
                 end
@@ -777,7 +779,38 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <td>$<%= gold_total   %></td>
                   <td>$<%= final_total  %></td>
                 </tr>
+              </table><br><br>
+              <%
+                junk, bar, bull = @silver.get_pieces_count
+              %>
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Type</th>
+                  <th>Count</th>
+                </tr>
+                <tr>
+                  <td>Junk</td>
+                  <td><%= junk  %></td>
+                </tr>
+                <tr>
+                  <td>Bar</td>
+                  <td><%= bar   %></td>
+                </tr>
+                <tr>
+                  <td>Bullion</td>
+                  <td><%= bull  %></td>
+                </tr>
+              </table><br><br>
+              <!-- <h1>Total Count</h1> -->
+              <table style="width:50%" border="1" align="center">
+                <tr>
+                  <th>Total</th>
+                </tr>
+                <tr>
+                  <td><%= junk.to_i + bar.to_i + bull.to_i %></td>
+                </tr>
               </table>
+
             </div>
           </li>
         <li>
