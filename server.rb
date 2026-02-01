@@ -25,7 +25,10 @@ configure do
   use Rack::CommonLogger, Logger.new('app.log')
 end
 
-
+# Set a ENV with "PASS" before running the code
+# or put it in the .bashrc file... Command: export PASS='myP@asswordistightasamonkey'
+# The username is 'admin'
+# Set: export CRYPTO='crypto.json'
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ['admin', ENV['PASS'] ]  
 end
@@ -36,6 +39,7 @@ get '/bar' do
   erb :bar
 end
 get '/dns' do
+  # DO NOT SELL
   erb :dns
 end
 post '/enter_bar' do
@@ -43,8 +47,12 @@ post '/enter_bar' do
   # 1: Bar
   quantity = params["quantity"].to_i
   if quantity > 0
+    # if greater than `0` it will loop through the 
+    # quantiy param and enter that amount of data 
+    # into the database.
     quantity.times { |ii| i.input_site(1, params) }
   else
+    # This will just enter the data once 
     i.input_site(1, params)
   end
   erb :index
@@ -77,7 +85,14 @@ get '/cash' do
   erb :cash
 end
 post '/enter_crypto' do
+  # Will create two params: `crypto_type` and 
+  # `new_amount`. Will detect what crypto it was
+  # and add the new number into the json file. Or delete
+  # the amount given.
+
+  # gets the crypto file json name
   file_read   = File.read(ENV['CRYPTO'])
+  # reads the JSON file
   json        = JSON.parse(file_read)
   crypto_type = params["crypto_type"]
   new_amount  = params["new_amount"]
@@ -145,7 +160,6 @@ end
 get '/bullion' do
   erb :bullion
 end
-
 get '/delete_bullion' do 
 	erb :delete_bullion
 end
@@ -184,9 +198,6 @@ post '/enter_bullion' do
   # 3: bullion
   i.input_site(3, params)
   erb :index
-end
-get '/test' do  
-	erb :test
 end
 post '/status' do
   inv = Inventory.new
