@@ -287,7 +287,7 @@
                   <th>Sold Value</th>
                 </tr>
                 <tr>
-                  <td><font color="white">$<%= sold_total %></font></td>
+                  <td><font color="white">$<%= sold_total[1] %></font></td>
                 </tr>
               </table>
               <br><br>
@@ -327,6 +327,7 @@
               <br><br>
               <h1>Spot Average</h1>
               <% bars_spot_avg = @silver.spot_avg(2) %>
+              <font color="white"><%= bars_spot_avg %></font>
               <table style="width:50%" border="1" align="center">
                 <tr>
                   <th>Average Spot Price</th>
@@ -617,7 +618,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                 names = {}
                 i = 0
                 pre_names.each do |name, count|
-                  if !names.key?(name)
+                  unless names.key?(name)
                     names[name] = count
                   else
                     names[name] +=  count
@@ -804,7 +805,7 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               <!-- <h1>Total Count</h1> -->
               <table style="width:50%" border="1" align="center">
                 <tr>
-                  <th>Total</th>
+                  <th>Total Count</th>
                 </tr>
                 <tr>
                   <td><%= junk.to_i + bar.to_i + bull.to_i %></td>

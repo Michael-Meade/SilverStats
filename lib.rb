@@ -293,7 +293,8 @@ class Inventory < Sql
       count += 1
     end
     avg = total / count  # get the average
-    Logger.error("select_price_avg in #{$0} in #{id} table. data: #{avg}")
+    Logger.info("select_price_avg in #{$0} in #{id} table. data: #{avg}")
+  avg
   rescue StandardError => e
     puts "ERROR: #{e}".red
     Logger.error("Error: #{e} \n table: #{table}")
@@ -343,15 +344,15 @@ class Inventory < Sql
     end
     begin
       if count.to_i.eql?(0)
-        Logger.info("Shipping avg #{table}: 0")
+        Logger.info("Shipping avg #{table}: 0 -> count: #{count}")
         return [0, count]
       end
       if total_shipping.to_i.eql?(0)
-        Logger.info("total_shipping -> #{table}:   0")
+        Logger.info("total_shipping -> #{table}:   0 -> #{count}" )
         return [0, count]
       end
       if !count.to_i.eql?(0) && !total_shipping.to_i.eql?(0)
-        Logger.info("Shipping avg #{table}: #{total_shipping / count}")
+        Logger.info("Shipping avg #{table}: #{total_shipping / count} -> #{count}")
         [total_shipping / count, count]
       end
     rescue StandardError => e
@@ -431,9 +432,10 @@ class Inventory < Sql
         else
           years_hash[year] += 1
         end
+      Logger.info("table -> #{table}: List years: #{years_hash}")
       end
     end
-    Logger.info("table -> #{table}: List years: #{year_hash}")
+    
   years_hash
   end
   def list_months
@@ -455,8 +457,8 @@ class Inventory < Sql
           months_hash[month] += 1
         end
       end
+      #Logger.info("table -> #{table}: List years: #{months_hash}")
     end
-    Logger.info("table -> #{table}: List years: #{months_hash}")
   months_hash
   end
   def select_total_oz(id)
@@ -684,8 +686,8 @@ class Inventory < Sql
       bullion_amount = bullion_amount.dup
       bullion_count += bullion_amount
     end
-    Logger.info("Total physical amount of pieces: Junk: #{junk} Bar:#{bar} Bullion: #{bull}")
-    Logger.info("Total physical amount of pieces: total: #{junk + bar + bull}")
+    Logger.info("Total physical amount of pieces: Junk: #{junk_count} Bar:#{bar_count} Bullion: #{bullion_count}")
+    Logger.info("Total physical amount of pieces: total: #{junk_count + bar_count + bullion_count}")
     #           0          1              2
     return [junk_count, bar_count, bullion_count]
   end

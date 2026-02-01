@@ -86,12 +86,14 @@ I had to install this too: `sudo apt update && sudo apt install build-essential 
 
 ```ruby
 sudo apt-get install sqlite3
+
+sudo apt install ruby-dev
 ```
 
 ```ruby
 gem install gruff
 gem install sqlite3
-gem install CryptoPriceFiner
+gem install CryptoPriceFinder
 gem install sinatra
 gem install httparty
 gem install rack -v 3.1.12
