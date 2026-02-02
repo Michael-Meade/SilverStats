@@ -670,20 +670,20 @@ class Inventory < Sql
     bullion_count = 0
 
     @db.execute("select amount from Junk where status = 'own';").each do |junk_amount|
-      junk_amount = junk_amount.shift
       junk_amount = junk_amount.dup
+      junk_amount = junk_amount.shift
       junk_count += junk_amount.to_i
     end
 
     @db.execute("select amount from Bar where status = 'own';").each do |bar_amount|
-      bar_amount = bar_amount.shift
       bar_amount = bar_amount.dup
+      bar_amount = bar_amount.shift
       bar_count += bar_amount
     end
 
     @db.execute("select amount from Bullion where status = 'own';").each do |bullion_amount|
-      bullion_amount = bullion_amount.shift
       bullion_amount = bullion_amount.dup
+      bullion_amount = bullion_amount.shift
       bullion_count += bullion_amount
     end
     Logger.info("Total physical amount of pieces: Junk: #{junk_count} Bar:#{bar_count} Bullion: #{bullion_count}")

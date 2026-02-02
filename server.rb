@@ -193,6 +193,9 @@ end
 get '/status_gold' do 
   erb :status_gold
 end
+get '/status_dns' do
+  erb :status_dns
+end
 post '/enter_bullion' do
   i = Inventory.new
   # 3: bullion

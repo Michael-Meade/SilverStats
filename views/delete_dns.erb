@@ -1,0 +1,92 @@
+<html>
+  <head>
+    <title>Silver Mangement</title>
+    <style>
+      tr:nth-child(even) {background-color: #304254;}
+      td { color: yellow; align: center; text-align: center;}
+      th { color: #FF0000; text-align: center;}
+    </style>
+  </head>
+    <body style="background-color: #121212;">
+      <pre><font color="red"><center>
+
+                                                                                                                                                                                            
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+DDDDDDDDDDDDD      EEEEEEEEEEEEEEEEEEEEEELLLLLLLLLLL             EEEEEEEEEEEEEEEEEEEEEETTTTTTTTTTTTTTTTTTTTTTTEEEEEEEEEEEEEEEEEEEEEE     DDDDDDDDDDDDD        NNNNNNNN        NNNNNNNN   SSSSSSSSSSSSSSS 
+D::::::::::::DDD   E::::::::::::::::::::EL:::::::::L             E::::::::::::::::::::ET:::::::::::::::::::::TE::::::::::::::::::::E     D::::::::::::DDD     N:::::::N       N::::::N SS:::::::::::::::S
+D:::::::::::::::DD E::::::::::::::::::::EL:::::::::L             E::::::::::::::::::::ET:::::::::::::::::::::TE::::::::::::::::::::E     D:::::::::::::::DD   N::::::::N      N::::::NS:::::SSSSSS::::::S
+DDD:::::DDDDD:::::DEE::::::EEEEEEEEE::::ELL:::::::LL             EE::::::EEEEEEEEE::::ET:::::TT:::::::TT:::::TEE::::::EEEEEEEEE::::E     DDD:::::DDDDD:::::D  N:::::::::N     N::::::NS:::::S     SSSSSSS
+  D:::::D    D:::::D E:::::E       EEEEEE  L:::::L                 E:::::E       EEEEEETTTTTT  T:::::T  TTTTTT  E:::::E       EEEEEE       D:::::D    D:::::D N::::::::::N    N::::::NS:::::S            
+  D:::::D     D:::::DE:::::E               L:::::L                 E:::::E                     T:::::T          E:::::E                    D:::::D     D:::::DN:::::::::::N   N::::::NS:::::S            
+  D:::::D     D:::::DE::::::EEEEEEEEEE     L:::::L                 E::::::EEEEEEEEEE           T:::::T          E::::::EEEEEEEEEE          D:::::D     D:::::DN:::::::N::::N  N::::::N S::::SSSS         
+  D:::::D     D:::::DE:::::::::::::::E     L:::::L                 E:::::::::::::::E           T:::::T          E:::::::::::::::E          D:::::D     D:::::DN::::::N N::::N N::::::N  SS::::::SSSSS    
+  D:::::D     D:::::DE:::::::::::::::E     L:::::L                 E:::::::::::::::E           T:::::T          E:::::::::::::::E          D:::::D     D:::::DN::::::N  N::::N:::::::N    SSS::::::::SS  
+  D:::::D     D:::::DE::::::EEEEEEEEEE     L:::::L                 E::::::EEEEEEEEEE           T:::::T          E::::::EEEEEEEEEE          D:::::D     D:::::DN::::::N   N:::::::::::N       SSSSSS::::S 
+  D:::::D     D:::::DE:::::E               L:::::L                 E:::::E                     T:::::T          E:::::E                    D:::::D     D:::::DN::::::N    N::::::::::N            S:::::S
+  D:::::D    D:::::D E:::::E       EEEEEE  L:::::L         LLLLLL  E:::::E       EEEEEE        T:::::T          E:::::E       EEEEEE       D:::::D    D:::::D N::::::N     N:::::::::N            S:::::S
+DDD:::::DDDDD:::::DEE::::::EEEEEEEE:::::ELL:::::::LLLLLLLLL:::::LEE::::::EEEEEEEE:::::E      TT:::::::TT      EE::::::EEEEEEEE:::::E     DDD:::::DDDDD:::::D  N::::::N      N::::::::NSSSSSSS     S:::::S
+D:::::::::::::::DD E::::::::::::::::::::EL::::::::::::::::::::::LE::::::::::::::::::::E      T:::::::::T      E::::::::::::::::::::E     D:::::::::::::::DD   N::::::N       N:::::::NS::::::SSSSSS:::::S
+D::::::::::::DDD   E::::::::::::::::::::EL::::::::::::::::::::::LE::::::::::::::::::::E      T:::::::::T      E::::::::::::::::::::E     D::::::::::::DDD     N::::::N        N::::::NS:::::::::::::::SS 
+DDDDDDDDDDDDD      EEEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLLLEEEEEEEEEEEEEEEEEEEEEE      TTTTTTTTTTT      EEEEEEEEEEEEEEEEEEEEEE     DDDDDDDDDDDDD        NNNNNNNN         NNNNNNN SSSSSSSSSSSSSSS   
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                                         
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+                                                                                                                                                                                            
+
+      </pre></font></center>
+	    <font color="yellow">
+	    	<center>
+	    		<% @silver = Inventory.new %>
+		      <h1>
+		      	<table style="width:50%" border="1" align="center">
+              <tr>
+                <th>ID</th>
+                <th>Bought Date</th>
+                <th>Spot Price</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Shipping</th>
+                <th>Total</th>
+                <th>OZ</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Sold Value</th>
+                <th>Seller</th>
+                <th>Method</th>
+              </tr>
+              <% dns =  @silver.select(6, html_table: true) %>
+              <% dns.each do |i| %>
+              <tr>
+                <td><font color="white"><%= i[0] %></font></td>
+                <td><font color="white"><%= i[1] %></font></td>
+                <td><font color="white"><%= i[2] %></font></td>
+                <td><font color="white"><%= i[3] %></font></td>
+                <td><font color="white"><%= i[4] %></font></td>
+                <td><font color="white"><%= i[5] %></font></td>
+                <td><font color="white"><%= i[6] %></font></td>
+                <td><font color="white"><%= i[7] %></font></td>
+                <td><font color="white"><%= i[8] %></font></td>
+                <td><font color="white"><%= i[9] %></font></td>
+                <td><font color="white"><%= i[10] %></font></td>
+                <td><font color="white"><%= i[11] %></font></td>
+                <td><font color="white"><%= i[12] %></font></td>
+              </tr>
+              <% end %>
+            </table>
+		      	<form action="/delete_row" method="post">
+          		<label for="delete_row">Delete Row:</label><br>
+          		<input type="text" id="delete_dns" name="delete_dns" required="required" value="row_id"><br>
+          		<input type="submit" value="Submit">  
+          	</form>
+		      </h1>
+		    </center>
+		</font>
+	</body>
+</html>
