@@ -29,9 +29,12 @@ end
 # or put it in the .bashrc file... Command: export PASS='myP@asswordistightasamonkey'
 # The username is 'admin'
 # Set: export CRYPTO='crypto.json'
+#
+=begin
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
     [username, password] == ['admin', ENV['PASS'] ]  
 end
+=end
 get '/' do
   erb :index
 end
