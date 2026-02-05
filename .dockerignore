@@ -5,3 +5,4 @@ app.log
 test2_bk.db
 .git
 *.db
+*.csv
