@@ -21,3 +21,4 @@ edit.rb
 silver.zip
 *.zip
 *csv
+/spreadsheets_output/*.csv
