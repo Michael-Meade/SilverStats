@@ -4,8 +4,7 @@
 
 require 'sqlite3'
 require_relative 'lib'
-@db = SQLite3::Database.new 'test_db.db'
-#'test2.db' 
+@db = SQLite3::Database.new 'test2.db' 
 #'test2.db'
 #@db.execute("UPDATE Bar SET method = 'APMEX' WHERE id='5';")
 #@db.execute("UPDATE Bar SET seller = 'APMEX' WHERE id='5';")
@@ -98,9 +97,9 @@ def edit_date(table)
   #@db.execute("UPDATE Bullion SET seller = 'APMEX' WHERE id='3';")
 end
 
-edit_date("Bullion")
-edit_date("Junk")
-edit_date("Bar")
+#edit_date("Bullion")
+#edit_date("Junk")
+#edit_date("Bar")
 #@db.execute('create table IF NOT EXISTS CashTest (id integer primary key, amount integer, recipient text, status text, spent_amount integer);')
 
 #@db.execute('create table IF NOT EXISTS JunkTest (id integer primary key, amount integer, recipient text, status text, spent_amount integer);')
@@ -167,3 +166,6 @@ end
               method text);")
 =end
 #@db.execute("drop table Bar")
+
+i    = Inventory.new
+p i.list_days

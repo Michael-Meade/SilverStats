@@ -245,7 +245,7 @@ class Inventory < Sql
       cash_amount    = data["cash_amount"]
       from           = data["cash_from"]
       current_amount = data["cash_current"]
-      @db.execute 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', current_amount
+      @db.execute2 'insert into Cash values (?, ?, ?, ?, ?)', nil, cash_amount, from, 'own', current_amount
       Logger.info("Entered #{cash_amount} from #{data}")
     end
   end
@@ -276,7 +276,7 @@ class Inventory < Sql
       end
     rescue => e
       puts "#{e}"
-      Logger.info("ERROR with #{$0} with the spot_avg")
+      Logger.error("ERROR with #{$0} with the spot_avg. #{e}")
     end
     
   end
@@ -310,7 +310,7 @@ class Inventory < Sql
         @db.execute("select * from #{table} ;").each do |i|
           puts i.join(' | ')
         end
-        Logger.error("Selecting data from #{table}...")
+        Logger.info("Selecting data from #{table}...")
       rescue SQLite3::SQLException => e
         puts "ERROR: #{e}".red
         Logger.error("Error with selecting table: #{table}")
@@ -325,7 +325,7 @@ class Inventory < Sql
       @db.execute("select * from #{table} ;").each do |i|
         html_out << i
       end
-      Logger.error("Selecting data from #{table}...")
+      Logger.info("Selecting data from #{table}...")
       html_out
     end
   end
@@ -388,25 +388,25 @@ class Inventory < Sql
     gsm_total = 0
 
     @db.execute("select total from Bullion where seller = 'Golden State Mint';").each { |amount| amount = amount.dup; gsm_total = gsm_total.dup; gsm_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| gsm_total = gsm_total.dup; gsm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'Golden State Mint';").each { |amount| amount = amount.dup; gsm_total = gsm_total.dup; gsm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'Golden State Mint';").each { |amount| amount = amount.dup; gsm_total = gsm_total.dup; gsm_total += amount.shift }
     total << ["Gold State Mint", gsm_total ]
 
     # MoneyMetals
     mm_total = 0
 
-    @db.execute("select total from Bullion where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
-    @db.execute("select total from Bar where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'MoneyMetals';").each { |amount| mm_total = mm_total.dup; mm_total += amount.shift }
+    @db.execute("select total from Bullion where seller = 'MoneyMetals';").each { |amount| amount = amount.dup; mm_total = mm_total.dup; mm_total += amount.shift }
+    @db.execute("select total from Bar where seller = 'MoneyMetals';").each { |amount| amount = amount.dup; mm_total = mm_total.dup; mm_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'MoneyMetals';").each { |amount| amount = amount.dup; mm_total = mm_total.dup; mm_total += amount.shift }
     total << ["MoneyMetals", mm_total]
 
     # APMEX
     a_total = 0
 
-    @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
+    @db.execute("select total from Bullion where seller = 'APMEX';").each { |amount| amount = amount.dup; a_total = a_total.dup; a_total += amount.shift }
     @db.execute("select total from Bar where seller = 'APMEX';").each { |amount| amount = amount.dup; a_total = a_total.dup; a_total += amount.shift }
-    @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| a_total = a_total.dup;a_total += amount.shift }
-    @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| a_total = a_total.dup; a_total += amount.shift }
+    @db.execute("select total from Junk where seller = 'APMEX';").each { |amount| amount = amount.dup; a_total = a_total.dup;a_total += amount.shift }
+    @db.execute("select total from Gold where seller = 'APMEX';").each { |amount| amount = amount.dup; a_total = a_total.dup; a_total += amount.shift }
     total << ["APMEX", a_total]
 
   Logger.info("List sites: #{total}")
@@ -437,6 +437,36 @@ class Inventory < Sql
     end
     
   years_hash
+  end
+  def list_days
+    # This part goes through all the types of silver and gets the count
+    # of what days I bought them. 
+    days_hash = {}
+    # the types of silver ids
+    types = [1,2,3]
+    types.each do |id|
+      # get the table name
+      @table = get_options(id)
+      @db.execute("select bought_date from #{@table};").each do |date|
+        date = date.dup
+        date = date.shift
+        # get the day number
+        day = Date.parse(date).wday
+        # uses the day number to get day name (monday, friday)
+        day_name = Date::DAYNAMES[day]
+        unless days_hash.has_key?(day_name)
+          # if the day name is not in the hash
+          # it will add it with the value of 1
+          days_hash[day_name] = 1
+        else
+          # it is already in the has it will 
+          # add 1 to the value
+          days_hash[day_name] += 1
+        end
+      end
+    end
+  Logger.info("table -> #{@table}: List days: #{days_hash}")
+  days_hash
   end
   def list_months
     # This part of the code will go through the databases

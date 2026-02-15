@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'test2'
+require_relative 'lib'
 loop do
   print("\n\n\n\n")
   Silver.menu

@@ -706,6 +706,21 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
               %>
               <img src="years_purchases.png" width="100%" height="100%">
               <br>
+              <h1>Number of Purchases by Day of Week</h1>
+              <% 
+                i = Inventory.new
+                years = i.list_days
+                g = Gruff::Bar.new
+                g.title = 'Number of Purchases by Day of Week'
+                g.show_labels_for_bar_values = true
+                g.sort = true
+                years.each do |data|
+                  g.data(data[0], data[1])
+                end
+                g.write(File.join("public", "days_purchases.png"))
+              %>
+              <img src="days_purchases.png" width="100%" height="100%">
+              <br>
               <h1>Number of Purchases by Month</h1>
               <% 
                 i = Inventory.new
@@ -832,7 +847,8 @@ EEEEEEEEEEEEEEEEEEEEEE  nnnnnn    nnnnnn          ttttttttttt      eeeeeeeeeeeee
                   <td><%= junk.to_i + bar.to_i + bull.to_i %></td>
                 </tr>
               </table>
-
+                <br><br>
+                <button class="button type" onclick="document.location='/export'">Export</button>&nbsp&nbsp
             </div>
           </li>
         <li>

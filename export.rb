@@ -3,6 +3,8 @@ require_relative 'lib'
 require 'csv'
 require 'securerandom'
 require 'date'
+require 'rubygems'
+require 'zip'
 class Export < Inventory
 	def types_of_silver
 		{
@@ -41,7 +43,26 @@ class Export < Inventory
 			save_file_name << file_name
 			end
 		end
-	return save_file_name
+	save_file_name
+	end
+	def create_zip
+		d = DateTime.now
+		date = d.strftime("%m-%d-%Y")
+		uid = SecureRandom.uuid
+		folder = File.join("spreadsheets_output")
+		input_filenames = create_csv
+		zipfile_name = File.join("spreadsheets_output", "#{date}-#{uid}.zip")
+
+		Zip::File.open(zipfile_name, create: true) do |zipfile|
+		  input_filenames.each do |filename|
+		    # Two arguments:
+		    # - The name of the file as it will appear in the archive
+		    # - The original file, including the path to find it
+		    zipfile.add(filename, File.join(folder, filename))
+		  end
+		  zipfile.get_output_stream("myFile") { |f| f.write "myFile contains just this" }
+		end
+	return zipfile_name
 	end
 end
 
@@ -50,9 +71,4 @@ rows = Export.new
 
 
 p rows.create_csv
-=ed
-
-
-
-
-
+=end

@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'colorize'
 require_relative 'lib'
+require_relative 'export'
 require 'securerandom'
 begin
   require 'CryptoPriceFinder'
@@ -205,6 +206,16 @@ post '/enter_bullion' do
   i.input_site(3, params)
   erb :index
 end
+
+get '/export' do
+  rows = Export.new
+  zip  = rows.create_zip
+  Dir.glob('spreadsheets_output/*.csv').each do |f|
+    File.delete(f)
+  end
+  send_file zip, :filename => zip, :type => 'Application/octet-stream'
+end
+
 post '/status' do
   inv = Inventory.new
   # Get the type name
